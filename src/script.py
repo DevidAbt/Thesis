@@ -2,21 +2,41 @@ from typing import Callable
 import matplotlib.pyplot as plt
 import networkx as nx
 from networkx.classes.graph import Graph
-from networkx.utils.misc import groups
 import numpy as np
 from itertools import count
 
 
-def get_binary_triangle_tensor(graph):
-    A = nx.adjacency_matrix(G)
+def get_binary_triangle_tensor(graph: Graph):
+    A = nx.adjacency_matrix(graph)
     length = A.shape[0]
     tensor = np.ndarray((length, length, length))
+
     for i in range(length):
         for j in range(length):
             for k in range(length):
                 value = 1 if i != j and i != k and j != k \
                     and A[i, j] == 1 and A[i, k] == 1 and A[j, k] == 1 else 0
                 tensor[i][j][k] = value
+
+    return tensor
+
+
+def get_random_walk_triangle_tensor(graph: Graph):
+    A = nx.adjacency_matrix(graph)
+    length = A.shape[0]
+    tensor = np.ndarray((length, length, length))
+
+    adjacency_matrix = A.toarray()
+    triangles_matrix = np.multiply(
+        adjacency_matrix, np.matmul(adjacency_matrix, adjacency_matrix))
+
+    for i in range(length):
+        for j in range(length):
+            for k in range(length):
+                value = 1 / triangles_matrix[j][k] if i != j and i != k and j != k \
+                    and A[i, j] == 1 and A[i, k] == 1 and A[j, k] == 1 else 0
+                tensor[i][j][k] = value
+
     return tensor
 
 
@@ -71,34 +91,33 @@ def solve_eigenvalue_problem(graph: Graph, get_tensor_fn: Callable[[Graph], np.n
 
 
 # https://stackoverflow.com/a/28916094
-def colormap(graph: Graph, attributes):
-    # groups = set(nx.get_node_attributes(graph, 'group').values())
+def colormap(graph: Graph, attributes, file_name: str):
     groups = set(attributes)
     mapping = dict(zip(sorted(groups), count()))
     nodes = graph.nodes()
     colors = [mapping[attributes[n]] for n in nodes]
 
     # drawing nodes and edges separately so we can capture collection for colobar
-    pos = nx.spring_layout(graph)
+    pos = nx.circular_layout(graph)
     ec = nx.draw_networkx_edges(graph, pos, alpha=0.2)
     nc = nx.draw_networkx_nodes(graph, pos, nodelist=nodes, node_color=colors,
                                 node_size=100, cmap=plt.cm.jet)
     plt.colorbar(nc)
     plt.axis('off')
-    plt.show()
+    plt.savefig(f"{file_name}.png")
+    plt.clf()
 
 
 if __name__ == "__main__":
     G = nx.karate_club_graph()
 
-    result1 = solve_eigenvalue_problem(
-        G, get_binary_triangle_tensor, 0.5, 2, 10)
-    print_with_labels(G, result1, "graph")
-    print(result1)
-    colormap(G, result1)
+    # A = nx.adjacency_matrix(G)
 
-    # result2 = mx(A, t1, x1, 0.5, 2)
-    # print_with_labels(G, result2, "graph_0.5")
-
-    # result3 = mx(A, t1, x1, 1, 2)
-    # print_with_labels(G, result3, "graph_1")
+    alpha = 0
+    p = 2
+    num_iterations = 10
+    for i in range(11):
+        result = solve_eigenvalue_problem(
+            G, get_random_walk_triangle_tensor, alpha + i / 10, p, num_iterations)
+        colormap(
+            G, result, f"results/colored_karate_Tw_{alpha+i/10}_{p}_{num_iterations}.png")
