@@ -4,6 +4,7 @@ import networkx as nx
 from networkx.classes.graph import Graph
 import numpy as np
 from itertools import count
+import math
 
 
 def get_binary_triangle_tensor(graph: Graph):
@@ -62,6 +63,9 @@ def get_clustering_coefficient_triangle_tensor(graph: Graph):
 
 
 def mu(a, b, p):
+    if p == 0:
+        return math.sqrt(a*b)
+
     return np.power((np.power(np.abs(a), p)+np.power(np.abs(b), p))/2, 1/p)
 
 
