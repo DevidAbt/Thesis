@@ -154,16 +154,18 @@ def colormap(graph: Graph, attributes, file_name: str):
     plt.clf()
 
 
+def create_eigenvalue_centrality_images(graph: Graph, get_tensor_fn: Callable[[Graph], np.ndarray], alpha: float, p: float, num_iterations: int):
+    for i in range(11):
+        result = solve_eigenvalue_problem(
+            graph, get_tensor_fn, alpha + i / 10, p, num_iterations)
+        colormap(
+            graph, result, f"../results/eigenvalue_centrality/colored_karate_Tl_{alpha+i/10}_{p}_{num_iterations}.png")
+
+
 if __name__ == "__main__":
     G = nx.karate_club_graph()
-
-    # A = nx.adjacency_matrix(G)
-
     alpha = 0
     p = 2
     num_iterations = 10
-    for i in range(11):
-        result = solve_eigenvalue_problem(
-            G, get_random_walk_triangle_tensor, alpha + i / 10, p, num_iterations)
-        colormap(
-            G, result, f"../results/colored_karate_Tl_{alpha+i/10}_{p}_{num_iterations}.png")
+    create_eigenvalue_centrality_images(
+        G, get_local_closure_triangle_tensor, alpha, p, num_iterations)
