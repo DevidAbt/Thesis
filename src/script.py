@@ -166,4 +166,4 @@ if __name__ == "__main__":
         result = solve_eigenvalue_problem(
             G, get_random_walk_triangle_tensor, alpha + i / 10, p, num_iterations)
         colormap(
-            G, result, f"results/colored_karate_Tw_{alpha+i/10}_{p}_{num_iterations}.png")
+            G, result, f"../results/colored_karate_Tl_{alpha+i/10}_{p}_{num_iterations}.png")
