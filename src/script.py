@@ -62,6 +62,27 @@ def get_clustering_coefficient_triangle_tensor(graph: Graph):
     return tensor
 
 
+def get_local_closure_triangle_tensor(graph: Graph):
+    A = nx.adjacency_matrix(graph)
+    length = A.shape[0]
+    adjacency_matrix = A.toarray()
+
+    one_vector = np.ones(length)
+    d = np.matmul(adjacency_matrix, one_vector)
+    w = np.subtract(np.matmul(adjacency_matrix, d), d)
+
+    tensor = np.ndarray((length, length, length))
+
+    for i in range(length):
+        for j in range(length):
+            for k in range(length):
+                value = 1 / w[i] if i != j and i != k and j != k \
+                    and A[i, j] == 1 and A[i, k] == 1 and A[j, k] == 1 else 0
+                tensor[i][j][k] = value
+
+    return tensor
+
+
 def mu(a, b, p):
     if p == 0:
         return math.sqrt(a*b)
