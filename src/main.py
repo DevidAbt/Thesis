@@ -1,3 +1,4 @@
+import argparse
 from typing import Callable
 import networkx as nx
 from networkx.classes.graph import Graph
@@ -28,6 +29,22 @@ def create_eigenvalue_centrality_images(graph: Graph, get_tensor_fn: Callable[[G
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-g', '--graph', type=argparse.FileType("r"),
+                        help="graph to work with")
+    parser.add_argument('-a', '--alpha', type=float, default=0.5,
+                        help="first/second order interaction ratio (0<=a<=1)")
+    parser.add_argument('-p', type=float, default=0,
+                        help="parameter of the T_p operator")
+    parser.add_argument('-n', '--num_iter', type=int, default=10,
+                        help="number of iterations in the power method")
+    parser.add_argument('operation', choices=["solve"], help="what to do")
+
+    args = parser.parse_args()
+    print(f"args: {args}")
+
+    exit()
+
     G = nx.karate_club_graph()
     alpha = 0
     p = 2
