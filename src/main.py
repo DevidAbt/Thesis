@@ -11,7 +11,7 @@ from utils import mx
 
 def solve_eigenvalue_problem(graph: Graph, get_tensor_fn: Callable[[Graph], np.ndarray], alpha: float, p: float, num_iterations: int):
     A = nx.adjacency_matrix(graph)
-    t1 = get_tensor_fn(G)
+    t1 = get_tensor_fn(graph)
     b_k = np.random.rand(A.shape[1])
     for _ in range(num_iterations):
         b_k1 = mx(A, t1, b_k, alpha, p)
@@ -32,6 +32,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-g', '--graph', type=argparse.FileType("r"),
                         help="graph to work with")
+    parser.add_argument('-t', '--tensor', type=str,
+                        default="binary", help="type of the tensor to use")
     parser.add_argument('-a', '--alpha', type=float, default=0.5,
                         help="first/second order interaction ratio (0<=a<=1)")
     parser.add_argument('-p', type=float, default=0,
@@ -43,11 +45,26 @@ if __name__ == "__main__":
     args = parser.parse_args()
     print(f"args: {args}")
 
-    exit()
+    if args.graph is None:
+        graph = nx.karate_club_graph()
+    else:
+        raise argparse.ArgumentError(
+            "Custom graph processing not implemented yet")
 
-    G = nx.karate_club_graph()
-    alpha = 0
-    p = 2
-    num_iterations = 10
-    create_eigenvalue_centrality_images(
-        G, get_local_closure_triangle_tensor, alpha, p, num_iterations)
+    if args.tensor == "binary":
+        tensor_fn = get_binary_triangle_tensor
+    elif args.tensor == "random_walk":
+        tensor_fn = get_random_walk_triangle_tensor
+    elif args.tensor == "clustering_coefficient":
+        tensor_fn = get_clustering_coefficient_triangle_tensor
+    elif args.tensor == "local_closure":
+        tensor_fn = get_local_closure_triangle_tensor
+    else:
+        raise argparse.ArgumentError(f"Unknown tensor type: {args.tensor}")
+
+    if args.operation == "solve":
+        result = solve_eigenvalue_problem(
+            graph, tensor_fn, args.alpha, args.p, args.num_iter)
+        print(result)
+    else:
+        raise argparse.ArgumentError(f"Invalid operation: {args.operation}")
