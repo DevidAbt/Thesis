@@ -29,8 +29,8 @@ class Database:
     def conn(self):
         return self._conn
 
-    def insert_comparsion(self, graph_name, alpha, p, degree_binary, degree_random_walk, degree_clustering_coefficient, degree_local_closure, binary_random_walk, binary_clustering_coefficient, binary_local_closure, random_walk_clustering_coefficient, random_walk_local_closure, clustering_coefficient_local_closure):
+    def insert_comparison(self, graph_name, alpha, p, degree_binary, degree_random_walk, degree_clustering_coefficient, degree_local_closure, binary_random_walk, binary_clustering_coefficient, binary_local_closure, random_walk_clustering_coefficient, random_walk_local_closure, clustering_coefficient_local_closure):
         self._cursor.execute(
-            f'''DELETE FROM Comparsion WHERE graph_name='{graph_name}' AND alpha={alpha} AND p={p};''')
-        self._cursor.execute(f'''INSERT INTO Comparsion (graph_name, alpha, p, degree_binary, degree_random_walk, degree_clustering_coefficient, degree_local_closure, binary_random_walk, binary_clustering_coefficient, binary_local_closure, random_walk_clustering_coefficient, random_walk_local_closure, clustering_coefficient_local_closure)
+            f'''DELETE FROM Comparison WHERE graph_name='{graph_name}' AND alpha={alpha} AND p={p};''')
+        self._cursor.execute(f'''INSERT INTO Comparison (graph_name, alpha, p, degree_binary, degree_random_walk, degree_clustering_coefficient, degree_local_closure, binary_random_walk, binary_clustering_coefficient, binary_local_closure, random_walk_clustering_coefficient, random_walk_local_closure, clustering_coefficient_local_closure)
                                 VALUES ('{graph_name}', {alpha}, {p}, {degree_binary}, {degree_random_walk}, {degree_clustering_coefficient}, {degree_local_closure}, {binary_random_walk}, {binary_clustering_coefficient}, {binary_local_closure}, {random_walk_clustering_coefficient}, {random_walk_local_closure}, {clustering_coefficient_local_closure});''')
