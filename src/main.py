@@ -7,6 +7,8 @@ import numpy as np
 import pandas as pd
 import scipy.stats as stats
 import logging
+from database import Database
+import re
 
 from tensor import get_binary_triangle_tensor, get_random_walk_triangle_tensor, get_clustering_coefficient_triangle_tensor, get_local_closure_triangle_tensor
 from visualization import colormap
@@ -103,7 +105,7 @@ if __name__ == "__main__":
     parser.add_argument('-n', '--num_iter', type=int, default=10,
                         help="number of iterations in the power method")
     parser.add_argument('operation', choices=[
-                        "solve", "compare"], help="what to do")
+                        "solve", "compare", "comparison"], help="what to do")
 
     args = parser.parse_args()
     logging.debug(f"args: {args}")
@@ -127,5 +129,14 @@ if __name__ == "__main__":
                           columns=pd.Index(centrality_names))
         df.columns.name = "p_value \ tau"
         logging.info("\n" + df.to_string())
+    elif args.operation == "comparison":
+        db = Database()
+        p = 0
+        for i in range(11):
+            table, centrality_names = compare_centralities(graph, [
+                "binary", "random_walk", "clustering_coefficient", "local_closure"], i*0.1, args.p, args.num_iter)
+            db.insert_comparison("karate", i*0.1, args.p, table[0][1], table[0][2], table[0][3],
+                                 table[0][4], table[1][2], table[1][3], table[1][4], table[2][3], table[2][4], table[3][4])
+        db.conn.commit()
     else:
         raise argparse.ArgumentError(f"Invalid operation: {args.operation}")
