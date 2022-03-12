@@ -1,6 +1,7 @@
 import argparse
-from ast import arg
-from typing import Callable, Dict
+from datetime import datetime
+import random
+from typing import Callable
 import networkx as nx
 from networkx.classes.graph import Graph
 import numpy as np
@@ -11,7 +12,8 @@ from database import Database
 import re
 
 from tensor import get_binary_triangle_tensor, get_random_walk_triangle_tensor, get_clustering_coefficient_triangle_tensor, get_local_closure_triangle_tensor
-from visualization import colormap
+from classes import LastModification
+from visualization import colormap, draw_iteration_result, print_with_labels
 from utils import mx
 
 logging.basicConfig(level=logging.DEBUG,  # filename=".log", filemode='a',
@@ -25,7 +27,8 @@ def solve_eigenvalue_problem(graph: Graph, get_tensor_fn: Callable[[Graph], np.n
         f"Solving eigenvalue problem for: {graph.name}, {get_tensor_fn.__name__}, {alpha}, {p}, {num_iterations}")
     A = nx.adjacency_matrix(graph)
     t1 = get_tensor_fn(graph)
-    b_k = np.random.rand(A.shape[1])
+    # b_k = np.random.rand(A.shape[1])
+    b_k = np.ones(A.shape[1])
     for _ in range(num_iterations):
         b_k1 = mx(A, t1, b_k, alpha, p)
         b_k1_norm = np.linalg.norm(b_k1)
@@ -105,7 +108,7 @@ if __name__ == "__main__":
     parser.add_argument('-n', '--num_iter', type=int, default=10,
                         help="number of iterations in the power method")
     parser.add_argument('operation', choices=[
-                        "solve", "compare", "comparison"], help="what to do")
+                        "solve", "compare", "comparison", "find-similar-centralities"], help="what to do")
 
     args = parser.parse_args()
     logging.debug(f"args: {args}")
@@ -138,5 +141,58 @@ if __name__ == "__main__":
             db.insert_comparison("karate", i*0.1, args.p, table[0][1], table[0][2], table[0][3],
                                  table[0][4], table[1][2], table[1][3], table[1][4], table[2][3], table[2][4], table[3][4])
         db.conn.commit()
+    elif args.operation == "find-similar-centralities":
+        iteration = 0
+        date_time_str = datetime.now().strftime("%m_%d_%Y__%H_%M_%S")
+
+        last_graph = None
+        best_tau_sum = -1000
+
+        last_modification = None
+        while True:
+            # calculating centrality correlations
+            table, centrality_names = compare_centralities(graph, [
+                "binary", "random_walk", "clustering_coefficient", "local_closure"], args.alpha, args.p, args.num_iter)
+
+            tau_sum = 0
+            for i in range(len(table)):
+                for j in range(i+1, len(table[i])):
+                    tau_sum += table[i][j]
+
+            if tau_sum > best_tau_sum:
+                best_tau_sum = tau_sum
+                draw_iteration_result(
+                    graph.copy(), f"results/{date_time_str}", iteration, tau_sum, last_modification, True)
+            else:
+                graph = last_graph
+
+            logging.info(f"tau_sum: {tau_sum}, best: {best_tau_sum}")
+
+            n = len(graph.nodes)
+            complete_graph = graph.size() == n*(n-1)/2
+
+            new_graph = graph.copy()
+
+            edge_removed = False
+            if complete_graph or (len(graph.edges) > 0 and bool(random.getrandbits(1))):
+                u, v = list(graph.edges)[random.randint(
+                    0, len(graph.edges)-1)]
+                new_graph.remove_edge(u, v)
+                last_modification = LastModification(u, v, False)
+                edge_removed = True
+            else:
+                while True:
+                    u = random.randint(0, n-1)
+                    v = random.randint(0, n-1)
+                    if u != v and not graph.has_edge(u, v):
+                        new_graph.add_edge(u, v)
+                        last_modification = LastModification(u, v, True)
+                        break
+
+            last_graph = graph
+            graph = new_graph
+
+            iteration += 1
+
     else:
         raise argparse.ArgumentError(f"Invalid operation: {args.operation}")
