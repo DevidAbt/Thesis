@@ -9,7 +9,6 @@ import pandas as pd
 import scipy.stats as stats
 import logging
 from database import Database
-import re
 
 from tensor import get_binary_triangle_tensor, get_random_walk_triangle_tensor, get_clustering_coefficient_triangle_tensor, get_local_closure_triangle_tensor
 from classes import LastModification
@@ -116,8 +115,7 @@ if __name__ == "__main__":
     if args.graph is None:
         graph = nx.karate_club_graph()
     else:
-        raise argparse.ArgumentError(
-            "Custom graph processing not implemented yet")
+        graph = nx.read_weighted_edgelist(args.graph)
 
     tensor_fn = get_tensor_util_by_name(args.tensor)
 
