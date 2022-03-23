@@ -1,3 +1,6 @@
 src/__pycache__/
 .log
 data.db
+*.pdf
+**/build
+questions.txt
