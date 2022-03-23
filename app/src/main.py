@@ -2,6 +2,7 @@ import argparse
 import networkx as nx
 import pandas as pd
 import logging
+from operations import find_similar_centralities2
 
 from operations import compare, comparison, find_similar_centralities, solve
 from utils import get_tensor_util_by_name, mx
@@ -25,7 +26,7 @@ if __name__ == "__main__":
     parser.add_argument('-n', '--num_iter', type=int, default=10,
                         help="number of iterations in the power method")
     parser.add_argument('operation', choices=[
-                        "solve", "compare", "comparison", "find-similar-centralities"], help="what to do")
+                        "solve", "compare", "comparison", "find-similar-centralities", "find-similar-centralities2"], help="what to do")
 
     args = parser.parse_args()
     logging.debug(f"args: {args}")
@@ -45,5 +46,7 @@ if __name__ == "__main__":
         comparison(graph, args.alpha, args.num_iter)
     elif args.operation == "find-similar-centralities":
         find_similar_centralities(graph, args.alpha, args.p, args.num_iter)
+    elif args.operation == "find-similar-centralities2":
+        find_similar_centralities2(graph, args.alpha, args.p, args.num_iter)
     else:
         raise argparse.ArgumentError(f"Invalid operation: {args.operation}")

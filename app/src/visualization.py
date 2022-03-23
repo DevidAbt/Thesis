@@ -37,32 +37,41 @@ def colormap(graph: Graph, attributes, file_name: str):
     plt.clf()
 
 
-def draw_iteration_result(graph: Graph, path: str, iteration: str, value, last_modification: LastModification, success: bool):
+def draw_iteration_result(graph: Graph, path: str, iteration: str, value, last_modifications: list[LastModification], success: bool):
     if not os.path.exists(path):
         os.makedirs(path)
 
-    if last_modification != None:
+    if len(last_modifications) != 0:
         edge_color_list = []
-        if (success and not last_modification.is_add) or not success:
-            graph.add_edge(last_modification.u,
-                           last_modification.v)
+        for last_modification in last_modifications:
+            if (success and not last_modification.is_add) or not success:
+                graph.add_edge(last_modification.u,
+                               last_modification.v)
         for e in graph.edges():
-            if (e[0] == last_modification.u and e[1] == last_modification.v) or (e[1] == last_modification.u and e[0] == last_modification.v):
-                if last_modification.is_add:
-                    edge_color_list.append("limegreen")
-                else:
-                    edge_color_list.append("red")
-            else:
+            modified = False
+            for last_modification in last_modifications:
+                if (e[0] == last_modification.u and e[1] == last_modification.v) or (e[1] == last_modification.u and e[0] == last_modification.v):
+                    modified = True
+                    if last_modification.is_add:
+                        edge_color_list.append("limegreen")
+                    else:
+                        edge_color_list.append("red")
+                    break
+            if not modified:
                 edge_color_list.append("black")
 
         node_color_list = []
         for n in graph.nodes():
-            if n == last_modification.u or n == last_modification.v:
-                if last_modification.is_add:
-                    node_color_list.append("green")
-                else:
-                    node_color_list.append("darkred")
-            else:
+            modified = False
+            for last_modification in last_modifications:
+                if n == last_modification.u or n == last_modification.v:
+                    modified = True
+                    if last_modification.is_add:
+                        node_color_list.append("green")
+                    else:
+                        node_color_list.append("darkred")
+                    break
+            if not modified:
                 node_color_list.append("tab:blue")
 
     else:
