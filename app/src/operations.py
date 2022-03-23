@@ -1,0 +1,88 @@
+import logging
+import pandas as pd
+from classes import LastModification
+from database import Database
+from datetime import datetime
+import random
+
+from logic import compare_centralities, solve_eigenvalue_problem
+from visualization import draw_iteration_result
+
+
+def solve(graph, tensor_fn, alpha, p, num_iter):
+    result = solve_eigenvalue_problem(
+        graph, tensor_fn, alpha, p, num_iter)
+    print(result)
+
+
+def compare(graph, alpha, p, num_iter):
+    table, centrality_names = compare_centralities(graph, [
+        "binary", "random_walk", "clustering_coefficient", "local_closure"], alpha, p, num_iter)
+
+    df = pd.DataFrame(table, index=pd.Index(centrality_names),
+                      columns=pd.Index(centrality_names))
+    df.columns.name = "p_value \ tau"
+    logging.info("\n" + df.to_string())
+
+
+def comparison(graph, alpha, num_iter):
+    db = Database()
+    p = 0
+    for i in range(11):
+        table, centrality_names = compare_centralities(graph, [
+            "binary", "random_walk", "clustering_coefficient", "local_closure"], i*0.1, p, num_iter)
+        db.insert_comparison("karate", i*0.1, args.p, table[0][1], table[0][2], table[0][3],
+                             table[0][4], table[1][2], table[1][3], table[1][4], table[2][3], table[2][4], table[3][4])
+    db.conn.commit()
+
+
+def find_similar_centralities(graph, alpha, p, num_iter):
+    iteration = 0
+    date_time_str = datetime.now().strftime("%m_%d_%Y__%H_%M_%S")
+
+    last_graph = None
+    best_tau_sum = -1000
+
+    last_modification = None
+    while True:
+        # calculating centrality correlations
+        table, centrality_names = compare_centralities(graph, [
+            "binary", "random_walk", "clustering_coefficient", "local_closure"], alpha, p, num_iter)
+
+        tau_sum = 0
+        for i in range(len(table)):
+            for j in range(i+1, len(table[i])):
+                tau_sum += table[i][j]
+
+        if tau_sum > best_tau_sum:
+            best_tau_sum = tau_sum
+            draw_iteration_result(
+                graph.copy(), f"results/{date_time_str}", iteration, tau_sum, last_modification, True)
+        else:
+            graph = last_graph
+
+        logging.info(f"tau_sum: {tau_sum}, best: {best_tau_sum}")
+
+        n = len(graph.nodes)
+        complete_graph = graph.size() == n*(n-1)/2
+
+        new_graph = graph.copy()
+
+        if complete_graph or (len(graph.edges) > 0 and bool(random.getrandbits(1))):
+            u, v = list(graph.edges)[random.randint(
+                0, len(graph.edges)-1)]
+            new_graph.remove_edge(u, v)
+            last_modification = LastModification(u, v, False)
+        else:
+            while True:
+                u = random.randint(0, n-1)
+                v = random.randint(0, n-1)
+                if u != v and not graph.has_edge(u, v):
+                    new_graph.add_edge(u, v)
+                    last_modification = LastModification(u, v, True)
+                    break
+
+        last_graph = graph
+        graph = new_graph
+
+        iteration += 1
