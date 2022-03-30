@@ -1,11 +1,11 @@
 
-%     Copyright 2021, Anyalai Richard
+%     Copyright 2021, Abt Dávid Ottó
 
 %         Szegedi Tudományegyetem
 % Természettudományi és Informatikai Kar
 %          Informatikai tanszék
 
-% A szakdolgozathoz felhasználtam az alábbi linken található sablont:
+% A szakdolgozathoz felhasználtam az alábbi linkeken található sablont:
 % https://github.com/szledan/thesis-template
 
 \documentclass[12pt,numbers=noenddot]{report}
@@ -42,6 +42,8 @@
 \BiblatexHungarianWarningOff
 \bibliography{cites}
 \DeclareFieldFormat{urldate}{Látogatás:}
+
+\usepackage{amsmath}
 
 % Egyéni színek
 \definecolor{codegreen}{rgb}{0,0.6,0}
@@ -101,7 +103,7 @@
 \titlespacing*{\chapter}{0pt}{0pt}{40pt}
 
 \newcommand{\szerzo}{Abt Dávid Ottó}
-\newcommand{\cim}{Gráf centralitás tenzorokkal és összehasonlításuk (TODO)}
+\newcommand{\cim}{Másodrendű sajátvektor centralitások vizsgálata}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Elülső kötéstábla                                                          %%
@@ -165,7 +167,7 @@
 	\begin{tabular}{c@{\hspace{4cm}}c}
 	\emph{Készítette:}						&\emph{Témavezető:}\\
 	\textbf{\szerzo}						&\textbf{Dr. Vinkó Tamás}\\
-	programtervező informatikus				&egyetemi docens\\
+	programtervező informatikus BSc				&egyetemi docens\\
 	hallgató								&
 	\end{tabular}
 
@@ -174,7 +176,7 @@
 	\Large {
 		Szeged\\
 		\vspace{2mm}
-		2021
+		2022
 	}
 \end{center}
 
@@ -264,7 +266,7 @@ operációs rendszer, kernel, bootloader, GRUB, Intel, x86, QEMU, VirtualBox
 %% Bevezetés                                                                  %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\chapter*{Bevezetés}
+\chapter{Bevezetés}
 \addcontentsline{toc}{section}{Bevezetés}
 \pagestyle{fancy}
 
@@ -300,6 +302,74 @@ lehessen valós hardveren futtatni, azonban erről lemondtam, amikor megtudtam,
 hogy a mai számítógépek nem támogatják a VGA mode 3-at, amit az operációs
 rendszerem a tartalom megjelenítésére használ, valamint a VESA VBE-t támogató
 hardware is egyre ritkább.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Alapfogalmak                                                                  %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Alapfogalmak}
+\addcontentsline{toc}{section}{Bevezetés}
+\pagestyle{fancy}
+
+\section{Gráf}
+
+Egy gráf definiálható egy $G=(V,E)$ párként, ahol V a gráf csúcsainak, E az éleinek halmaza. Az E halmaz V-beli elempárokat tartalmaz. 
+($E \subseteq V \times V$)
+
+Ez a matematikai struktúra alkalmas különböző entitások közti bináris kapcsolatok tárolására. Ezek lehetnek akár egy szociális médiai platform felhasználói közti ismerettségek, vagy egy internetes enciklopédia kulcsszavai közti összefüggések. A gráfok ezen tulajdonságát használja ki például a \textit{neo4j} nevű gráf adatbázis kezelő rendszer is.
+
+\section{Mátrix}
+A mátrix egy kétdimenziós listaként képzelhető el, ami nem csupán egy $m * n$ elemet tároló struktúra, hanem az elemek elhelyezkedésének köszönhetően jóval több információt tárol mint egy $m * n$ elemű halmaz.
+
+\section{Gráf ábrázolások, mátrix}
+A gráfokat ábrázolására a két legnépszerűbb adatszerkezet a szomszédsági lista, illetve a szomszédsági mátrix.
+
+A másodrendű sajátvektor centralitások vizsgálatához a szomszédsági mátrixokat fogjuk használni, mivel mátrixokon jóval könnyebb az ezekhez szükséges műveleteket elvégezni mint láncolt listákon.
+
+A szomszédsági mátrix egy $n \times n$-es mátrix, ahol $n$ a gráf csúcsainak száma. Az $m$-edik sor $n$-edik eleme megadja, hogy a gráf $m$-edik és $n$-edig csúcsa közt vezet-e él.
+
+
+\pagebreak
+
+\section{Sajátérték, sajátvektor}
+A mátrixokat felfoghatjuk egy geometriai transzformációként amit egy vektoron végzünk el. Például az $\textbf{A}$ mátrix a $\vec{v}$ vektort az alábbiak szerint módosítja:
+
+$$
+\textbf{A} \vec{v} = \vec{w}
+$$
+
+$$
+{
+	\begin{bmatrix}
+		a & b \\
+		c & d \\
+	\end{bmatrix}
+}
+{
+	\begin{bmatrix}
+		x \\
+		y \\
+	\end{bmatrix}
+}
+=
+{
+	\begin{bmatrix}
+		a*x+b*y \\
+		c*x+d*y \\
+	\end{bmatrix}
+}
+$$
+
+\vspace{1cm}
+
+A transzformáció irányát és mértékét a sajátvektor és a sajátérték jellemzi.
+Definíció szerint $A$ mátrix $v$ sajátétvektora és $\lambda$ sajátértéke közt az összefüggés: $$A \lambda = v \lambda$$
+
+
+\section{Centralitás}
+A gráfok atomi tulajdonságain (pl.: van-e él két csúcs között) kívül sok értékes információ kinyerhető különböző metrikákkal. Például a csúcsok "fontosságának" egy kimutatására szolgálnak a centralitások, amik egy sorrendet képeznek a gráf pontjai közt. A legegyszerűbb centralitás a fokszám centralitás, ami az adott csúcs fokszáma szerint képez sorrendet.
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Fejlesztői környezet                                                       %%
