@@ -1,3 +1,4 @@
+from datetime import datetime
 from networkx.classes.graph import Graph
 from itertools import count
 import networkx as nx
@@ -37,9 +38,13 @@ def colormap(graph: Graph, attributes, file_name: str):
     plt.clf()
 
 
-def draw_iteration_result(graph: Graph, path: str, iteration: str, value, last_modifications: list[LastModification], success: bool):
-    if not os.path.exists(path):
-        os.makedirs(path)
+date_time_str = datetime.now().strftime("%m_%d_%Y__%H_%M_%S")
+path = f"app/results/{date_time_str}"
+if not os.path.exists(path):
+    os.makedirs(path)
+
+
+def draw_iteration_result(graph: Graph, iteration: str, value, last_modifications: list[LastModification], success: bool, tensor_fn_names):
 
     if len(last_modifications) != 0:
         edge_color_list = []
@@ -78,9 +83,9 @@ def draw_iteration_result(graph: Graph, path: str, iteration: str, value, last_m
         edge_color_list = None
         node_color_list = None
 
-    plt.title(f"{iteration}. iteration, {value}",
+    plt.title(f"{', '.join(tensor_fn_names)}\n{iteration}. iteration, {value}",
               color=("g" if success else "r"))
     nx.draw_circular(graph, edge_color=edge_color_list,
                      node_color=node_color_list)
-    plt.savefig(f"{path}/{iteration}.png")
+    plt.savefig(f"{path}/{'__'.join(tensor_fn_names)}__{iteration}.png")
     plt.clf()

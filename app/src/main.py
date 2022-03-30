@@ -24,10 +24,10 @@ if __name__ == "__main__":
                         help="parameter of the T_p operator")
     parser.add_argument('-n', '--num_iter', type=int, default=10,
                         help="number of iterations in the power method")
-    parser.add_argument('-x', '--treshold', type=float, default=0.99,
+    parser.add_argument('-x', '--treshold', type=float, default=0.9,
                         help="number of iterations in the power method")
     parser.add_argument('operation', choices=[
-                        "solve", "compare", "comparison", "find-similar-centralities", "find-similar-centralities2"], help="what to do")
+                        "solve", "compare", "comparison", "find-similar-old", "find-similar", "find-similar-pair"], help="what to do")
 
     args = parser.parse_args()
     logging.debug(f"args: {args}")
@@ -48,11 +48,16 @@ if __name__ == "__main__":
         compare(graph, args.tensor, args.alpha, args.p, args.num_iter)
     elif args.operation == "comparison":
         comparison(graph, args.tensor, args.alpha, args.p, args.num_iter)
-    elif args.operation == "find-similar-centralities":
+    elif args.operation == "find-similar-old":
         find_similar_centralities(
             graph, args.tensor, args.alpha, args.p, args.num_iter, 1, args.treshold)
-    elif args.operation == "find-similar-centralities2":
+    elif args.operation == "find-similar":
         find_similar_centralities(
             graph, args.tensor, args.alpha, args.p, args.num_iter,  2, args.treshold)
+    elif args.operation == "find-similar-pair":
+        for i in range(len(args.tensor) - 1):
+            logging.debug(f"pair: {args.tensor[i]} {args.tensor[i+1]}")
+            graph = find_similar_centralities(
+                graph, args.tensor[i:i+2], args.alpha, args.p, args.num_iter,  2, args.treshold)
     else:
         raise argparse.ArgumentError(f"Invalid operation: {args.operation}")

@@ -3,7 +3,6 @@ import pandas as pd
 from utils import get_tensor_util_by_name
 from classes import LastModification
 from database import Database
-from datetime import datetime
 import random
 import networkx as nx
 from networkx.classes.graph import Graph
@@ -41,7 +40,6 @@ def comparison(graph, tensor_fn_names, alpha, p, num_iter):
 
 def find_similar_centralities(graph: Graph, tensor_fns, alpha, p, num_iter, mode, treshold):
     iteration = 0
-    date_time_str = datetime.now().strftime("%m_%d_%Y__%H_%M_%S")
 
     last_graph = None
     best_tau_sum = -1000
@@ -60,7 +58,7 @@ def find_similar_centralities(graph: Graph, tensor_fns, alpha, p, num_iter, mode
         if tau_sum > best_tau_sum:
             best_tau_sum = tau_sum
             draw_iteration_result(
-                graph.copy(), f"app/results/{date_time_str}", iteration, tau_sum, last_modifications, True)
+                graph.copy(), iteration, tau_sum, last_modifications, True, tensor_fns)
 
             if tau_sum > treshold:
                 return graph
