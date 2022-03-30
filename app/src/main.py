@@ -2,10 +2,9 @@ import argparse
 import networkx as nx
 import pandas as pd
 import logging
-from operations import find_similar_centralities2
 
 from operations import compare, comparison, find_similar_centralities, solve
-from utils import get_tensor_util_by_name, mx
+from utils import get_tensor_util_by_name
 
 logging.basicConfig(level=logging.DEBUG,
                     format="%(asctime)s - %(levelname)s - %(message)s")
@@ -17,8 +16,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-g', '--graph', type=argparse.FileType("r"),
                         help="graph to work with")
-    parser.add_argument('-t', '--tensor', type=str,
-                        default="binary", help="type of the tensor to use")
+    parser.add_argument('-t', '--tensor', type=str, action='append',
+                        help="type of the tensor to use")
     parser.add_argument('-a', '--alpha', type=float, default=0.5,
                         help="first/second order interaction ratio (0<=a<=1)")
     parser.add_argument('-p', type=float, default=0,
@@ -36,17 +35,22 @@ if __name__ == "__main__":
     else:
         graph = nx.read_weighted_edgelist(args.graph)
 
-    tensor_fn = get_tensor_util_by_name(args.tensor)
+    tensor_fns = []
+
+    if args.tensor == None or len(args.tensor) == 0:
+        args.tensor = ["binary"]
 
     if args.operation == "solve":
-        solve(graph, tensor_fn, args.alpha, args.p, args.num_iter)
+        solve(graph, args.tensor[0], args.alpha, args.p, args.num_iter)
     elif args.operation == "compare":
-        compare(graph, args.alpha, args.p, args.num_iter)
+        compare(graph, args.tensor, args.alpha, args.p, args.num_iter)
     elif args.operation == "comparison":
-        comparison(graph, args.alpha, args.num_iter)
+        comparison(graph, args.tensor, args.alpha, args.p, args.num_iter)
     elif args.operation == "find-similar-centralities":
-        find_similar_centralities(graph, args.alpha, args.p, args.num_iter, 1)
+        find_similar_centralities(
+            graph, args.tensor, args.alpha, args.p, args.num_iter, 1)
     elif args.operation == "find-similar-centralities2":
-        find_similar_centralities(graph, args.alpha, args.p, args.num_iter, 2)
+        find_similar_centralities(
+            graph, args.tensor, args.alpha, args.p, args.num_iter,  2)
     else:
         raise argparse.ArgumentError(f"Invalid operation: {args.operation}")

@@ -1,5 +1,6 @@
 import logging
 import pandas as pd
+from utils import get_tensor_util_by_name
 from classes import LastModification
 from database import Database
 from datetime import datetime
@@ -11,34 +12,34 @@ from logic import compare_centralities, solve_eigenvalue_problem
 from visualization import draw_iteration_result
 
 
-def solve(graph: Graph, tensor_fn, alpha, p, num_iter):
+def solve(graph: Graph, tensor_fn_name, alpha, p, num_iter):
+    tensor_fn = get_tensor_util_by_name(tensor_fn_name)
     result = solve_eigenvalue_problem(
         graph, tensor_fn, alpha, p, num_iter)
     print(result)
 
 
-def compare(graph: Graph, alpha, p, num_iter):
-    table, centrality_names = compare_centralities(graph, [
-        "binary", "random_walk", "clustering_coefficient", "local_closure"], alpha, p, num_iter)
+def compare(graph: Graph, tensor_fn_names, alpha, p, num_iter):
+    table = compare_centralities(graph, tensor_fn_names, alpha, p, num_iter)
 
-    df = pd.DataFrame(table, index=pd.Index(centrality_names),
-                      columns=pd.Index(centrality_names))
+    df = pd.DataFrame(table, index=pd.Index(tensor_fn_names),
+                      columns=pd.Index(tensor_fn_names))
     df.columns.name = "p_value \ tau"
     logging.info("\n" + df.to_string())
 
 
-def comparison(graph, alpha, num_iter):
+def comparison(graph, tensor_fn_names, alpha, p, num_iter):
     db = Database()
     p = 0
     for i in range(11):
-        table, centrality_names = compare_centralities(graph, [
-            "binary", "random_walk", "clustering_coefficient", "local_closure"], i*0.1, p, num_iter)
-        db.insert_comparison("karate", i*0.1, args.p, table[0][1], table[0][2], table[0][3],
+        table = compare_centralities(
+            graph, tensor_fn_names, i*0.1, p, num_iter)
+        db.insert_comparison("karate", i*0.1, p, table[0][1], table[0][2], table[0][3],
                              table[0][4], table[1][2], table[1][3], table[1][4], table[2][3], table[2][4], table[3][4])
     db.conn.commit()
 
 
-def find_similar_centralities(graph: Graph, alpha, p, num_iter, mode):
+def find_similar_centralities(graph: Graph, tensor_fns, alpha, p, num_iter, mode):
     iteration = 0
     date_time_str = datetime.now().strftime("%m_%d_%Y__%H_%M_%S")
 
@@ -48,8 +49,8 @@ def find_similar_centralities(graph: Graph, alpha, p, num_iter, mode):
     last_modifications = []
     while True:
         # calculating centrality correlations
-        table, centrality_names = compare_centralities(graph, [
-            "binary", "random_walk", "clustering_coefficient", "local_closure"], alpha, p, num_iter)
+        table = compare_centralities(
+            graph, tensor_fns, alpha, p, num_iter)
 
         tau_sum = 0
         for i in range(len(table)):

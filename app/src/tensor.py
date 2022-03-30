@@ -12,7 +12,7 @@ def get_binary_triangle_tensor(graph: Graph):
         for j in range(length):
             for k in range(length):
                 value = 1 if i != j and i != k and j != k \
-                    and A[i, j] == 1 and A[i, k] == 1 and A[j, k] == 1 else 0
+                    and A[i, j] > 0 and A[i, k] > 0 and A[j, k] > 0 else 0
                 tensor[i][j][k] = value
 
     return tensor
@@ -32,7 +32,7 @@ def get_random_walk_triangle_tensor(graph: Graph):
         for j in range(length):
             for k in range(length):
                 value = 1 / triangles_matrix[j][k] if i != j and i != k and j != k \
-                    and A[i, j] == 1 and A[i, k] == 1 and A[j, k] == 1 else 0
+                    and A[i, j] > 0 and A[i, k] > 0 and A[j, k] > 0 else 0
                 tensor[i][j][k] = value
 
     return tensor
@@ -52,7 +52,7 @@ def get_clustering_coefficient_triangle_tensor(graph: Graph):
         for j in range(length):
             for k in range(length):
                 value = 1 / (d[i]*(d[i]-1)) if i != j and i != k and j != k \
-                    and A[i, j] == 1 and A[i, k] == 1 and A[j, k] == 1 else 0
+                    and A[i, j] > 0 and A[i, k] > 0 and A[j, k] > 0 else 0
                 tensor[i][j][k] = value
 
     return tensor
@@ -73,7 +73,7 @@ def get_local_closure_triangle_tensor(graph: Graph):
         for j in range(length):
             for k in range(length):
                 value = 1 / w[i] if i != j and i != k and j != k \
-                    and A[i, j] == 1 and A[i, k] == 1 and A[j, k] == 1 else 0
+                    and A[i, j] > 0 and A[i, k] > 0 and A[j, k] > 0 else 0
                 tensor[i][j][k] = value
 
     return tensor

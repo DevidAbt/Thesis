@@ -1,4 +1,3 @@
-
 from networkx.classes.graph import Graph
 from typing import Callable
 import numpy as np
@@ -33,21 +32,18 @@ def solve_eigenvalue_problem(graph: Graph, get_tensor_fn: Callable[[Graph], np.n
 def compare_centralities(graph: Graph, tensor_fn_names: list[str], alpha: float, p: float, num_iterations: int, include_degree_centrality: bool = True):
     results = []
 
-    centrality_names = []
-    if include_degree_centrality:
-        centrality_names.append("degree")
-        results.append(
-            list(nx.algorithms.centrality.degree_centrality(graph).values()))
-
-    centrality_names.extend(tensor_fn_names)
-
     for tensor_fn_name in tensor_fn_names:
-        tensor_fn = get_tensor_util_by_name(tensor_fn_name)
+        if tensor_fn_name == "degree":
+            results.append(
+                list(nx.algorithms.centrality.degree_centrality(graph).values()))
+        else:
+            tensor_fn = get_tensor_util_by_name(tensor_fn_name)
 
-        result = solve_eigenvalue_problem(
-            graph, tensor_fn, alpha, p, num_iterations)
+            result = solve_eigenvalue_problem(
+                graph, tensor_fn, alpha, p, num_iterations)
+            print(result)
 
-        results.append(result)
+            results.append(result)
 
     n = len(results)
     table = []
@@ -65,4 +61,4 @@ def compare_centralities(graph: Graph, tensor_fn_names: list[str], alpha: float,
             table[i][j] = tau
             table[j][i] = p_value
 
-    return table, centrality_names
+    return table
