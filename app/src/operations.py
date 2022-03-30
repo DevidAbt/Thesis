@@ -4,6 +4,7 @@ from classes import LastModification
 from database import Database
 from datetime import datetime
 import random
+import networkx as nx
 from networkx.classes.graph import Graph
 
 from logic import compare_centralities, solve_eigenvalue_problem
@@ -58,13 +59,14 @@ def find_similar_centralities(graph: Graph, alpha, p, num_iter):
         if tau_sum > best_tau_sum:
             best_tau_sum = tau_sum
             draw_iteration_result(
-                graph.copy(), f"app/results/{date_time_str}", iteration, tau_sum, [last_modification], True)
+                graph.copy(), f"app/results/{date_time_str}", iteration, tau_sum, [last_modification] if last_modification != None else [], True)
         else:
             graph = last_graph
 
         logging.info(f"tau_sum: {tau_sum}, best: {best_tau_sum}")
 
         n = len(graph.nodes)
+
         complete_graph = graph.size() == n*(n-1)/2
 
         new_graph = graph.copy()
@@ -124,15 +126,18 @@ def find_similar_centralities2(graph: Graph, alpha, p, num_iter):
         while True:
             a, b = list(graph.edges)[random.randint(
                 0, len(graph.edges)-1)]
-            if len(graph.edges(a)) > 1 and len(graph.edges(b)) > 1:
+            removed_edge_graph = new_graph.copy()
+            removed_edge_graph.remove_edge(a, b)
+            if nx.is_connected(removed_edge_graph):
+                new_graph = removed_edge_graph
                 break
-        new_graph.remove_edge(a, b)
+
         last_modifications.append(LastModification(a, b, False))
 
         while True:
             c = random.randint(0, n-1)
             d = random.randint(0, n-1)
-            if c != d and c != a and d != b and c != b and d != a and not graph.has_edge(c, d):
+            if c != d and ((c != a and d != b) or (c != b and d != a)) and not graph.has_edge(c, d):
                 new_graph.add_edge(c, d)
                 last_modifications.append(LastModification(c, d, True))
                 break
