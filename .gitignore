@@ -3,4 +3,4 @@ app/src/__pycache__/
 data.db
 *.pdf
 **/build
-questions.txt
+*.txt
