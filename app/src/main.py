@@ -45,8 +45,8 @@ if __name__ == "__main__":
     elif args.operation == "comparison":
         comparison(graph, args.alpha, args.num_iter)
     elif args.operation == "find-similar-centralities":
-        find_similar_centralities(graph, args.alpha, args.p, args.num_iter)
+        find_similar_centralities(graph, args.alpha, args.p, args.num_iter, 1)
     elif args.operation == "find-similar-centralities2":
-        find_similar_centralities2(graph, args.alpha, args.p, args.num_iter)
+        find_similar_centralities(graph, args.alpha, args.p, args.num_iter, 2)
     else:
         raise argparse.ArgumentError(f"Invalid operation: {args.operation}")

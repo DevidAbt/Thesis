@@ -38,62 +38,9 @@ def comparison(graph, alpha, num_iter):
     db.conn.commit()
 
 
-def find_similar_centralities(graph: Graph, alpha, p, num_iter):
+def find_similar_centralities(graph: Graph, alpha, p, num_iter, mode):
     iteration = 0
     date_time_str = datetime.now().strftime("%m_%d_%Y__%H_%M_%S")
-
-    last_graph = None
-    best_tau_sum = -1000
-
-    last_modification = None
-    while True:
-        # calculating centrality correlations
-        table, centrality_names = compare_centralities(graph, [
-            "binary", "random_walk", "clustering_coefficient", "local_closure"], alpha, p, num_iter)
-
-        tau_sum = 0
-        for i in range(len(table)):
-            for j in range(i+1, len(table[i])):
-                tau_sum += table[i][j]
-
-        if tau_sum > best_tau_sum:
-            best_tau_sum = tau_sum
-            draw_iteration_result(
-                graph.copy(), f"app/results/{date_time_str}", iteration, tau_sum, [last_modification] if last_modification != None else [], True)
-        else:
-            graph = last_graph
-
-        logging.info(f"tau_sum: {tau_sum}, best: {best_tau_sum}")
-
-        n = len(graph.nodes)
-
-        complete_graph = graph.size() == n*(n-1)/2
-
-        new_graph = graph.copy()
-
-        if complete_graph or (len(graph.edges) > 0 and bool(random.getrandbits(1))):
-            u, v = list(graph.edges)[random.randint(
-                0, len(graph.edges)-1)]
-            new_graph.remove_edge(u, v)
-            last_modification = LastModification(u, v, False)
-        else:
-            while True:
-                u = random.randint(0, n-1)
-                v = random.randint(0, n-1)
-                if u != v and not graph.has_edge(u, v):
-                    new_graph.add_edge(u, v)
-                    last_modification = LastModification(u, v, True)
-                    break
-
-        last_graph = graph
-        graph = new_graph
-
-        iteration += 1
-
-
-def find_similar_centralities2(graph: Graph, alpha, p, num_iter):
-    iteration = 0
-    date_time_str = datetime.now().strftime("%m%d%Y__%H%M_%S")
 
     last_graph = None
     best_tau_sum = -1000
@@ -123,24 +70,41 @@ def find_similar_centralities2(graph: Graph, alpha, p, num_iter):
         new_graph = graph.copy()
         last_modifications = []
 
-        while True:
-            a, b = list(graph.edges)[random.randint(
-                0, len(graph.edges)-1)]
-            removed_edge_graph = new_graph.copy()
-            removed_edge_graph.remove_edge(a, b)
-            if nx.is_connected(removed_edge_graph):
-                new_graph = removed_edge_graph
-                break
+        if mode == 1:
+            complete_graph = graph.size() == n*(n-1)/2
 
-        last_modifications.append(LastModification(a, b, False))
+            if complete_graph or (len(graph.edges) > 0 and bool(random.getrandbits(1))):
+                u, v = list(graph.edges)[random.randint(
+                    0, len(graph.edges)-1)]
+                new_graph.remove_edge(u, v)
+                last_modifications.append(LastModification(u, v, False))
+            else:
+                while True:
+                    u = random.randint(0, n-1)
+                    v = random.randint(0, n-1)
+                    if u != v and not graph.has_edge(u, v):
+                        new_graph.add_edge(u, v)
+                        last_modifications.append(LastModification(u, v, True))
+                        break
+        elif mode == 2:
+            while True:
+                a, b = list(graph.edges)[random.randint(
+                    0, len(graph.edges)-1)]
+                removed_edge_graph = new_graph.copy()
+                removed_edge_graph.remove_edge(a, b)
+                if nx.is_connected(removed_edge_graph):
+                    new_graph = removed_edge_graph
+                    break
 
-        while True:
-            c = random.randint(0, n-1)
-            d = random.randint(0, n-1)
-            if c != d and ((c != a and d != b) or (c != b and d != a)) and not graph.has_edge(c, d):
-                new_graph.add_edge(c, d)
-                last_modifications.append(LastModification(c, d, True))
-                break
+            last_modifications.append(LastModification(a, b, False))
+
+            while True:
+                c = random.randint(0, n-1)
+                d = random.randint(0, n-1)
+                if c != d and ((c != a and d != b) or (c != b and d != a)) and not graph.has_edge(c, d):
+                    new_graph.add_edge(c, d)
+                    last_modifications.append(LastModification(c, d, True))
+                    break
 
         last_graph = graph
         graph = new_graph
