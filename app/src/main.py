@@ -24,6 +24,8 @@ if __name__ == "__main__":
                         help="parameter of the T_p operator")
     parser.add_argument('-n', '--num_iter', type=int, default=10,
                         help="number of iterations in the power method")
+    parser.add_argument('-x', '--treshold', type=float, default=0.99,
+                        help="number of iterations in the power method")
     parser.add_argument('operation', choices=[
                         "solve", "compare", "comparison", "find-similar-centralities", "find-similar-centralities2"], help="what to do")
 
@@ -48,9 +50,9 @@ if __name__ == "__main__":
         comparison(graph, args.tensor, args.alpha, args.p, args.num_iter)
     elif args.operation == "find-similar-centralities":
         find_similar_centralities(
-            graph, args.tensor, args.alpha, args.p, args.num_iter, 1)
+            graph, args.tensor, args.alpha, args.p, args.num_iter, 1, args.treshold)
     elif args.operation == "find-similar-centralities2":
         find_similar_centralities(
-            graph, args.tensor, args.alpha, args.p, args.num_iter,  2)
+            graph, args.tensor, args.alpha, args.p, args.num_iter,  2, args.treshold)
     else:
         raise argparse.ArgumentError(f"Invalid operation: {args.operation}")

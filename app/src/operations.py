@@ -39,7 +39,7 @@ def comparison(graph, tensor_fn_names, alpha, p, num_iter):
     db.conn.commit()
 
 
-def find_similar_centralities(graph: Graph, tensor_fns, alpha, p, num_iter, mode):
+def find_similar_centralities(graph: Graph, tensor_fns, alpha, p, num_iter, mode, treshold):
     iteration = 0
     date_time_str = datetime.now().strftime("%m_%d_%Y__%H_%M_%S")
 
@@ -61,6 +61,9 @@ def find_similar_centralities(graph: Graph, tensor_fns, alpha, p, num_iter, mode
             best_tau_sum = tau_sum
             draw_iteration_result(
                 graph.copy(), f"app/results/{date_time_str}", iteration, tau_sum, last_modifications, True)
+
+            if tau_sum > treshold:
+                return graph
         else:
             graph = last_graph
 
