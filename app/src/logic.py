@@ -41,7 +41,6 @@ def compare_centralities(graph: Graph, tensor_fn_names: list[str], alpha: float,
 
             result = solve_eigenvalue_problem(
                 graph, tensor_fn, alpha, p, num_iterations)
-            print(result)
 
             results.append(result)
 
