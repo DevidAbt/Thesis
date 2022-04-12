@@ -47,6 +47,8 @@
 
 \usepackage{multicol}
 
+\usepackage{amssymb} 
+
 % Egyéni színek
 \definecolor{codegreen}{rgb}{0,0.6,0}
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
@@ -463,6 +465,97 @@ A fokszám centralitás kiszamítható gráfot leíró $n \times n$ szomszédsá
 	\end{bmatrix}
 \end{align}
 
+
+\section{Tenzor}
+
+Egy skalár egy szám, egy $n$ elemű vektort $n$ rendezett érték, egy $n \times m$-es mátrix $n*m$ számstruktúra tárolására képes. 
+Ezeket a matematikai fogalmakat általánosíthatjuk a tenzorokkal. 
+A skalár egy nullad-, a vektor egy első-, a mátrix pedig egy másodrendű tenzornak tekinthatő.
+
+Amiért igazán fontos behozni a tenzor fogalmát az az, hogy nem állunk meg a másodrendűségnél, léteznek magasabb rendű tenzorok is.
+Például egy $3 \times 3 \times 3$-as tenzor 27 elemből áll, és felfogható egy három dimenziós tömbként.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Másodrendű sajátvektor centralitások                                       %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Másodrendű sajátvektor centralitások}
+
+
+\section{Elsőrendű centralitás}
+
+A korábban látott fokszám centralitás egy elsőrendő centralitás volt,
+mivel fokszám az adott csúcshoz kapcsolódó élek számát jelenti,
+egy él pedig két csúcs között teremt kapcsolatot. 
+
+Az elsőrendű centralitások kiszámításához elég volt egy mátrixszorzást végrehajtani egy vektoron,
+hiszen a mátrix felfogható egy kétdimenziós tömbként is, 
+aminek az $A[i][j]$-edig eleme jellemzi az összefüggést az $i$-edik és $j$-edik csúcs között.
+
+
+\section{Másodrendű centralitás}
+
+A másodrendű centralitás ezzel szemben csúcshármasok közti kapcsolatok alapján fogja jellemezni a gráfot.
+Három-három csúcs viszonyának tárolására a mátrixok nem elegendőek, harmadrendű tenzorok viszont igen.
+Ezt fogjuk felhasználni a következőkben.
+
+
+\section{Általános sajátvektor modell}
+
+A másodrendű centralitások számításához egy operátorra lesz szükség, amely végrehajtra a megfelelő leképezést.
+
+Egy \boldmath{$T$}\unboldmath $\in \mathbb{R}^{n \times n \times n}$ tenzorhoz és egy $p$ valós paraméterhez
+definiálunk egy \boldmath{$T_p$}\unboldmath $: \mathbb{R}^n \rightarrow \mathbb{R}^n$ operátort,
+ami egy $n$ elemű vektorhoz egy $n$ elemű vektort rendel. Az eredményvektor $i$-edik elemét a következőképp kaphatjuk meg:
+
+$$\boldsymbol{T_p}(\boldsymbol{x})_i = \sum_{j,k=1}^n \boldsymbol{T}_{ijk} \mu_p(x_j,x_k)$$
+
+ahol $\mu_p(x_j,x_k)$ a hatványközép, azaz:
+
+$$\mu_p(x_j,x_k) = \left(\frac{|a|^p+|b|^p}{2}\right)^{1/p}$$
+
+
+Ahhoz, hogy hatékonyan vizsgálatokat tudjunk végezni a különböző centralitásokon szükségünk lesz egy egységes kiszámítási módra.
+
+Legyen $\alpha \in \mathbb{R}: 0 \leq \alpha \leq 1$ skalár, ami az első- és másodrendűség lineáris kombinációjának az arányát adja meg,
+illetve legyen $M \in \mathbb{R}^{n \times n}$ nemnegatív elemekből álló, a gráfhoz tartozó négyzetes mátrix,
+valamint $\boldsymbol{T} \in \mathbb{R}^{n \times n \times n}$ szintén nemnegatív elemegkből álló, gráfot jellemző tenzor.
+Ekkor definiálhatunk egy $\mathcal{M}: \mathbb{R}^n \rightarrow \mathbb{R}^n$ operátort, hogy
+
+$$\mathcal{M}(\boldsymbol{x}) = \alpha M \boldsymbol{x} + (1-\alpha) \boldsymbol{T}_p(\boldsymbol{x})$$
+
+\noindent
+Ekkor az első- és a másodrendű centralitás $i$-edik csúcsbeli értéke $x_i \geq 0$ ahol x kielégíti a sajátérték problémát:
+$$\mathcal{M}(\boldsymbol{x}) = \lambda \boldsymbol{x}$$
+
+\noindent
+$\alpha$ megfelelő megválasztásával kiszámíhatjuk csak az elsőrendű centrailtás értéket $(\alpha = 1)$, 
+vagy csak a másodrendű centralitás értéket $(\alpha = 0)$, illetve a kettő súlyozott kombinációját is.
+
+
+\section{$M$ és $\boldsymbol{T}$ megválasztása}
+
+Az $M$ mátrix az elsőrendű összetevője, tehát valamilyen elsőrendű információt kellene elkódolnia. 
+Erre egy kézenfekvő lehetőség a szomszédsági mátrix.
+
+A fontosabb szerepet pedig a $\boldsymbol{T}$ tenzor tölti be, hiszen ez tartalmazza a vizsgálandó másodrendű kapcsolatokat.
+
+\subsection*{Bináris háromszögtenzor}
+
+TODO
+
+\subsection*{``Random séta'' háromszögtenzor}
+
+TODO
+
+\subsection*{Klaszterező-együttható háromszögtenzor}
+
+TODO
+
+\subsection*{Local closure triangle tensor (?)}
+
+TODO
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
