@@ -308,7 +308,7 @@ rendszerem a tartalom megjelenítésére használ, valamint a VESA VBE-t támoga
 hardware is egyre ritkább.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Alapfogalmak                                                                  %%
+%% Alapfogalmak                                                               %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \chapter{Alapfogalmak}
@@ -317,26 +317,40 @@ hardware is egyre ritkább.
 
 \section{Gráf}
 
-Egy gráf definiálható egy $G=(V,E)$ párként, ahol V a gráf csúcsainak, E az éleinek halmaza. Az E halmaz V-beli elempárokat tartalmaz. 
+Egy gráf definiálható egy $G=(V,E)$ párként, ahol V a gráf csúcsainak, E az 
+éleinek halmaza. Az E halmaz V-beli elempárokat tartalmaz. 
 ($E \subseteq V \times V$)
 
-Ez a matematikai struktúra alkalmas különböző entitások közti bináris kapcsolatok tárolására. Ezek lehetnek akár egy szociális médiai platform felhasználói közti ismerettségek, vagy egy internetes enciklopédia kulcsszavai közti összefüggések. A gráfok ezen tulajdonságát használja ki például a \textit{neo4j} nevű gráf adatbázis kezelő rendszer is.
+Ez a matematikai struktúra alkalmas különböző entitások közti bináris kapcsolatok 
+tárolására. Ezek lehetnek akár egy szociális médiai platform felhasználói közti 
+ismerettségek, vagy egy internetes enciklopédia kulcsszavai közti összefüggések. 
+A gráfok ezen tulajdonságát használja ki például a \textit{neo4j} nevű gráf 
+adatbázis kezelő rendszer is.
 
 \section{Mátrix}
-A mátrix egy kétdimenziós listaként képzelhető el, ami nem csupán egy $m * n$ elemet tároló struktúra, hanem az elemek elhelyezkedésének köszönhetően jóval több információt tárol mint egy $m * n$ elemű halmaz.
+A mátrix egy kétdimenziós listaként képzelhető el, ami nem csupán egy $m * n$ 
+elemet tároló struktúra, hanem az elemek elhelyezkedésének köszönhetően jóval 
+több információt tárol mint egy $m * n$ elemű halmaz.
 
 \section{Gráf ábrázolások, mátrix}
-A gráfokat ábrázolására a két legnépszerűbb adatszerkezet a szomszédsági lista, illetve a szomszédsági mátrix.
+A gráfokat ábrázolására a két legnépszerűbb adatszerkezet a szomszédsági lista, 
+illetve a szomszédsági mátrix.
 
-A másodrendű sajátvektor centralitások vizsgálatához a szomszédsági mátrixokat fogjuk használni, mivel mátrixokon jóval könnyebb az ezekhez szükséges műveleteket elvégezni mint láncolt listákon.
+A másodrendű sajátvektor centralitások vizsgálatához a szomszédsági mátrixokat 
+fogjuk használni, mivel mátrixokon jóval könnyebb az ezekhez szükséges 
+műveleteket elvégezni mint láncolt listákon.
 
-A szomszédsági mátrix egy $n \times n$-es mátrix, ahol $n$ a gráf csúcsainak száma. Az $m$-edik sor $n$-edik eleme megadja, hogy a gráf $m$-edik és $n$-edig csúcsa közt vezet-e él.
+A szomszédsági mátrix egy $n \times n$-es mátrix, ahol $n$ a gráf csúcsainak 
+száma. Az $m$-edik sor $n$-edik eleme megadja, hogy a gráf $m$-edik és 
+$n$-edig csúcsa közt vezet-e él.
 
 
 \pagebreak
 
 \section{Sajátérték, sajátvektor}
-A mátrixokat felfoghatjuk egy geometriai transzformációként amit egy vektoron végzünk el. Például az $\textbf{A}$ mátrix a $\vec{v}$ vektort az alábbiak szerint módosítja:
+A mátrixokat felfoghatjuk egy geometriai transzformációként amit egy vektoron 
+végzünk el. Például az $\textbf{A}$ mátrix a $\vec{v}$ vektort az alábbiak 
+szerint módosítja:
 
 $$
 \textbf{A} \vec{v} = \vec{w}
@@ -367,20 +381,25 @@ $$
 \vspace{1cm}
 
 A transzformáció irányát és mértékét a sajátvektor és a sajátérték jellemzi.
-Definíció szerint $A$ mátrix $v$ sajátétvektora és $\lambda$ sajátértéke közt az összefüggés: $$A \lambda = v \lambda$$
+Definíció szerint $A$ mátrix $v$ sajátétvektora és $\lambda$ sajátértéke 
+közt az összefüggés: $$A \lambda = v \lambda$$
 
 
 \section{Centralitás}
-A gráfok atomi tulajdonságain (pl.: van-e él két csúcs között) kívül sok értékes információ kinyerhető különböző metrikákkal. 
-Például a csúcsok "fontosságának" egy kimutatására szolgálnak a centralitások, amik egy sorrendet képeznek a gráf pontjai közt. 
+A gráfok atomi tulajdonságain (pl.: van-e él két csúcs között) kívül sok 
+értékes információ kinyerhető különböző metrikákkal. Például a csúcsok 
+"fontosságának" egy kimutatására szolgálnak a centralitások, amik egy sorrendet 
+képeznek a gráf pontjai közt. 
 
-A legegyszerűbb centralitás a fokszám centralitás, ami az adott csúcs fokszáma szerint képez sorrendet.
+A legegyszerűbb centralitás a fokszám centralitás, ami az adott csúcs fokszáma 
+szerint képez sorrendet.
 
 
 \noindent
 \begin{minipage}[c]{0.4\linewidth}
 
-\begin{tikzpicture}[node distance=15mm, inner sep=0pt, minimum size=15pt, thick, main/.style = {draw, circle}]
+\begin{tikzpicture}[node distance=15mm, inner sep=0pt, minimum size=15pt, 
+		thick, main/.style = {draw, circle}]
 	\node[main] (1) {a};
 	\node[main] (2) [above right of=1] {b};
 	\node[main] (3) [right of=2] {c}; 
@@ -432,9 +451,11 @@ $\rightarrow$
 
 \vspace{0.5cm}
 
-A ábrán szereplő 6 pontú gráfhoz egy 6 hosszúságú vektort rendelt, melynek elemei az egyes csúcsok fokszámával egyeznek meg.
+A ábrán szereplő 6 pontú gráfhoz egy 6 hosszúságú vektort rendelt, 
+melynek elemei az egyes csúcsok fokszámával egyeznek meg.
 
-A fokszám centralitás kiszamítható gráfot leíró $n \times n$ szomszédsági mátrix valamint egy $n$ elemű, egyesekből álló vektor szorzataként:
+A fokszám centralitás kiszamítható gráfot leíró $n \times n$ szomszédsági 
+mátrix valamint egy $n$ elemű, egyesekből álló vektor szorzataként:
 
 \begin{align}
 	\begin{bmatrix}
@@ -468,12 +489,16 @@ A fokszám centralitás kiszamítható gráfot leíró $n \times n$ szomszédsá
 
 \section{Tenzor}
 
-Egy skalár egy szám, egy $n$ elemű vektort $n$ rendezett érték, egy $n \times m$-es mátrix $n*m$ számstruktúra tárolására képes. 
+Egy skalár egy szám, egy $n$ elemű vektort $n$ rendezett érték, egy 
+$n \times m$-es mátrix $n*m$ számstruktúra tárolására képes. 
 Ezeket a matematikai fogalmakat általánosíthatjuk a tenzorokkal. 
-A skalár egy nullad-, a vektor egy első-, a mátrix pedig egy másodrendű tenzornak tekinthatő.
+A skalár egy nullad-, a vektor egy első-, a mátrix pedig egy másodrendű tenzornak 
+tekinthatő.
 
-Amiért igazán fontos behozni a tenzor fogalmát az az, hogy nem állunk meg a másodrendűségnél, léteznek magasabb rendű tenzorok is.
-Például egy $3 \times 3 \times 3$-as tenzor 27 elemből áll, és felfogható egy három dimenziós tömbként.
+Amiért igazán fontos behozni a tenzor fogalmát az az, hogy nem állunk meg a 
+másodrendűségnél, léteznek magasabb rendű tenzorok is. Például egy 
+$3 \times 3 \times 3$-as tenzor 27 elemből áll, és felfogható egy három 
+dimenziós tömbként.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -489,57 +514,72 @@ A korábban látott fokszám centralitás egy elsőrendő centralitás volt,
 mivel fokszám az adott csúcshoz kapcsolódó élek számát jelenti,
 egy él pedig két csúcs között teremt kapcsolatot. 
 
-Az elsőrendű centralitások kiszámításához elég volt egy mátrixszorzást végrehajtani egy vektoron,
-hiszen a mátrix felfogható egy kétdimenziós tömbként is, 
-aminek az $A[i][j]$-edig eleme jellemzi az összefüggést az $i$-edik és $j$-edik csúcs között.
+Az elsőrendű centralitások kiszámításához elég volt egy mátrixszorzást 
+végrehajtani egy vektoron, hiszen a mátrix felfogható egy kétdimenziós tömbként
+is, aminek az $A[i][j]$-edig eleme jellemzi az összefüggést az $i$-edik és 
+$j$-edik csúcs között.
 
 
 \section{Másodrendű centralitás}
 
-A másodrendű centralitás ezzel szemben csúcshármasok közti kapcsolatok alapján fogja jellemezni a gráfot.
-Három-három csúcs viszonyának tárolására a mátrixok nem elegendőek, harmadrendű tenzorok viszont igen.
+A másodrendű centralitás ezzel szemben csúcshármasok közti kapcsolatok alapján 
+fogja jellemezni a gráfot. Három-három csúcs viszonyának tárolására a mátrixok 
+nem elegendőek, harmadrendű tenzorok viszont igen.
 Ezt fogjuk felhasználni a következőkben.
 
 
 \section{Általános sajátvektor modell}
 
-A másodrendű centralitások számításához egy operátorra lesz szükség, amely végrehajtra a megfelelő leképezést.
+A másodrendű centralitások számításához egy operátorra lesz szükség, 
+amely végrehajtra a megfelelő leképezést.
 
-Egy \boldmath{$T$}\unboldmath $\in \mathbb{R}^{n \times n \times n}$ tenzorhoz és egy $p$ valós paraméterhez
-definiálunk egy \boldmath{$T_p$}\unboldmath $: \mathbb{R}^n \rightarrow \mathbb{R}^n$ operátort,
-ami egy $n$ elemű vektorhoz egy $n$ elemű vektort rendel. Az eredményvektor $i$-edik elemét a következőképp kaphatjuk meg:
+Egy \boldmath{$T$}\unboldmath $\in \mathbb{R}^{n \times n \times n}$ 
+tenzorhoz és egy $p$ valós paraméterhez definiálunk egy \boldmath{$T_p$}
+\unboldmath $: \mathbb{R}^n \rightarrow \mathbb{R}^n$ operátort,
+ami egy $n$ elemű vektorhoz egy $n$ elemű vektort rendel. 
+Az eredményvektor $i$-edik elemét a következőképp kaphatjuk meg:
 
-$$\boldsymbol{T_p}(\boldsymbol{x})_i = \sum_{j,k=1}^n \boldsymbol{T}_{ijk} \mu_p(x_j,x_k)$$
+$$\boldsymbol{T_p}(\boldsymbol{x})_i = \sum_{j,k=1}^n \boldsymbol{T}_{ijk} 
+\mu_p(x_j,x_k)$$
 
 ahol $\mu_p(x_j,x_k)$ a hatványközép, azaz:
 
 $$\mu_p(x_j,x_k) = \left(\frac{|a|^p+|b|^p}{2}\right)^{1/p}$$
 
 
-Ahhoz, hogy hatékonyan vizsgálatokat tudjunk végezni a különböző centralitásokon szükségünk lesz egy egységes kiszámítási módra.
+Ahhoz, hogy hatékonyan vizsgálatokat tudjunk végezni a különböző 
+centralitásokon szükségünk lesz egy egységes kiszámítási módra.
 
-Legyen $\alpha \in \mathbb{R}: 0 \leq \alpha \leq 1$ skalár, ami az első- és másodrendűség lineáris kombinációjának az arányát adja meg,
-illetve legyen $M \in \mathbb{R}^{n \times n}$ nemnegatív elemekből álló, a gráfhoz tartozó négyzetes mátrix,
-valamint $\boldsymbol{T} \in \mathbb{R}^{n \times n \times n}$ szintén nemnegatív elemegkből álló, gráfot jellemző tenzor.
-Ekkor definiálhatunk egy $\mathcal{M}: \mathbb{R}^n \rightarrow \mathbb{R}^n$ operátort, hogy
+Legyen $\alpha \in \mathbb{R}: 0 \leq \alpha \leq 1$ skalár, ami az első- 
+és másodrendűség lineáris kombinációjának az arányát adja meg,
+illetve legyen $M \in \mathbb{R}^{n \times n}$ nemnegatív elemekből álló, 
+a gráfhoz tartozó négyzetes mátrix, valamint $\boldsymbol{T} \in 
+\mathbb{R}^{n \times n \times n}$ szintén nemnegatív elemegkből álló, 
+gráfot jellemző tenzor. Ekkor definiálhatunk egy $\mathcal{M}: 
+\mathbb{R}^n \rightarrow \mathbb{R}^n$ operátort, hogy
 
-$$\mathcal{M}(\boldsymbol{x}) = \alpha M \boldsymbol{x} + (1-\alpha) \boldsymbol{T}_p(\boldsymbol{x})$$
+$$\mathcal{M}(\boldsymbol{x}) = \alpha M \boldsymbol{x} + (1-\alpha) 
+\boldsymbol{T}_p(\boldsymbol{x})$$
 
 \noindent
-Ekkor az első- és a másodrendű centralitás $i$-edik csúcsbeli értéke $x_i \geq 0$ ahol x kielégíti a sajátérték problémát:
+Ekkor az első- és a másodrendű centralitás $i$-edik csúcsbeli értéke $x_i 
+\geq 0$ ahol x kielégíti a sajátérték problémát:
 $$\mathcal{M}(\boldsymbol{x}) = \lambda \boldsymbol{x}$$
 
 \noindent
-$\alpha$ megfelelő megválasztásával kiszámíhatjuk csak az elsőrendű centrailtás értéket $(\alpha = 1)$, 
-vagy csak a másodrendű centralitás értéket $(\alpha = 0)$, illetve a kettő súlyozott kombinációját is.
+$\alpha$ megfelelő megválasztásával kiszámíhatjuk csak az elsőrendű 
+centrailtás értéket $(\alpha = 1)$, vagy csak a másodrendű centralitás 
+értéket $(\alpha = 0)$, illetve a kettő súlyozott kombinációját is.
 
 
 \section{$M$ és $\boldsymbol{T}$ megválasztása}
 
-Az $M$ mátrix az elsőrendű összetevője, tehát valamilyen elsőrendű információt kellene elkódolnia. 
+Az $M$ mátrix az elsőrendű összetevője, tehát valamilyen elsőrendű 
+információt kellene elkódolnia. 
 Erre egy kézenfekvő lehetőség a szomszédsági mátrix.
 
-A fontosabb szerepet pedig a $\boldsymbol{T}$ tenzor tölti be, hiszen ez tartalmazza a vizsgálandó másodrendű kapcsolatokat.
+A fontosabb szerepet pedig a $\boldsymbol{T}$ tenzor tölti be, hiszen ez 
+tartalmazza a vizsgálandó másodrendű kapcsolatokat.
 
 \subsection*{Bináris háromszögtenzor}
 
@@ -559,56 +599,109 @@ TODO
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Fejlesztői környezet                                                       %%
+%% Implementáció                                                              %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\chapter{Fejlesztői környezet}
+\chapter{Implementáció}
 
-A szoftver fejlesztése GNU+Linux operációs rendszeren zajlott, az alábbiakban
-olvasható a felhasznált szoftverek összessége, és azoknak a felhasználási módja.
+\section{Fejlesztői környezet}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% VSCodium                                                                   %%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+A programot GNU/Linux operácios rendszer alatt VSCodium-ban fejlesztettem 
+(Visual Studio Code nyílt forráskódú és szabad változa). A python nyelvet 
+választottam, ami egy széles körben elterjedt szkriptnyelv, egyszerű 
+szintaxissal, és sokrétű matematikai függvénykönyvtárakkal rendelkezik,
+így a célnak tökéletesen megfelel.
 
-\section{Visual Studio Codium}
+A NetworkX a használt csomagok közül a legfontosabb, a gráfok beolvasását,
+kezelését, illetve a rajtuk elvégzett műveleteket is támogatja. Ezen kívül
+említésre méltó még a NumPy és a Pandas, amiket mátrixműveletek kiszámítására
+használtam, valamint az argparse, amit parancssori argumentumok beolvasásában 
+segített, illetve a Matplotlib, amivel az eredményeket kirajzoltattam.
 
-A kód írásához a Microsoft Visual Studio Code nyílt forráskódú és szabad
-változatát, a VSCodium-ot használtam. Telepítve volt a Microsoft C/C++
-bővítménye mellett az \textit{ASM Code Lens} az assembly forrásfájlok
-szintaxisának a kiemelése miatt, illetve a
-\textit{Doxygen Documentation Generator} nevű bővítményt a dokumentáció
-automatikus generálásához.
+\section{A program magja}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% GNU Make                                                                   %%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Ahhoz, hogy gráfok centralitását összehasonlítsuk, először ki kell tudni szamolni őket.
+Az első lépés ennek az implementációja volt. Bemenetként egy gráfot kapunk, és az elvárt kimenet a 
+$\mathcal{M}(\boldsymbol{x}) = \lambda \boldsymbol{x}$
+egyenlet egy közelítő megoldása. 
 
-\section{GNU Make}
+Az egyenlet kiszámításához egy iterációs módszerre lesz szükségünk, a hatványmódszerre.
+Ez az eljárás iteratív lépések segítségével a legnagyobb abszolútértékű sajátértékhez
+és a hozzá tartozó sajátvektorhoz ad közelítő megoldást. 
+Az algoritmus alapja ez az iteráció:
+$$\boldsymbol{y}^{(k)} = A \boldsymbol{x}^{(k)}$$
+$$\boldsymbol{x}^{(k+1)} = \frac{\boldsymbol{y}^{(k)}}{||\boldsymbol{y}^{(k)}||}$$
 
-A build folyamatok automatizálásához a GNU Make-et használtam. Minden egyes
-nyelv forrásfájljait külön make targetekbe csoportosítottam, illetve az initrd,
-és a bootolható iso fájl is külön targetet kapott.
+ahol az első egyenlet egy mátrix-vektor szorzás, a második pedig ennek a részeredménynek a normált értékét adja meg.
+A kiinudlási ($\boldsymbol{x}^{(0)}$) vektor nem lehet merőleges a legnagyobb abszolútértékű sajátértékhez tartozó sajátvektorra.
 
-\begin{verbatim}
-HDRS := $(shell find $(SRC_DIR) -regex ".*\.\(hpp\|h\|inc\)")
-SRCS := $(shell find $(SRC_DIR) -regex ".*\.\(cpp\|c\|S\)")
-OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
-\end{verbatim}
+\pagebreak
 
-\noindent A fenti sorok begyűjtik az összes fejlécet és forrásfájlt egy-egy
-listába, az alábbiakban látható a C forrásfájlok targetje:
+A mi esetünkben ez a következőképpen néz ki:
 
-\begin{verbatim}
-$(BUILD_DIR)/%.c.o: %.c $(HDRS)
-    @mkdir -p $(dir $@)
-    @$(PROGRESS) && echo "Processing C source file: $<"
-    @$(CC) $(CFLAGS) -c $< -o $@
-\end{verbatim}
+$$\boldsymbol{y}^{(k)} = \mathcal{M}(\boldsymbol{x})$$
+$$\boldsymbol{x}^{(k+1)} = \frac{\boldsymbol{y}^{(k)}}{||\boldsymbol{y}^{(k)}||}$$
 
-\noindent Ügyeltem arra, hogy a fordító 32-bites rendszerre kompiláljon, és a C
-és C++ forrásfájlok esetén a standard könyvtárak helyett az én implementációmat
-használja.
+vagyis
+
+$$\boldsymbol{y}^{(k)} = \alpha M \boldsymbol{x} + (1-\alpha) \boldsymbol{T}_p(\boldsymbol{x})$$
+$$\boldsymbol{x}^{(k+1)} = \frac{\boldsymbol{y}^{(k)}}{||\boldsymbol{y}^{(k)}||}$$
+
+
+\section{Az egyenlet paraméterei}
+
+A kiszámítás előtt szükségünk lesz az $\alpha$-ra, az $M$-re, illetve $\boldsymbol{T_p}$-re, és a hozzá szükséges tenzorra.
+Alfa egyszerű skalár paraméter, $M$-et, mint szomszédsági mátrixot pedig megkaphatjuk 
+a NetworkX \texttt{adjacency\_matrix} nevű függvényével.
+
+A tenzorok előállítását saját függvényekkel oldottam meg. 
+Az input itt is egy gráf (NetworkX-es \texttt{Graph} típusban eltárolva),
+és hátrom egymásba ágyazott for ciklus tölti fel a háromdimenziós tömbként tárolt tenzorokat.
+Ezeke a függvények felépítésükben nagyban hasonlítanak, egyedül a tenzor értékét adó logika tér el.
+Itt említést érdemel a NumPy csomag \texttt{ndarray, multiply, matmul} és \texttt{ones} függvényei,
+amik sok forciklus megírását spórolták meg, ezzel rövidebbé, és átláthatóbbá téve a kódot.
+
+A $\boldsymbol{T_p}$ operátornak egy háromparaméteres függvényt írtam, ami a tenzort, 
+az $\boldsymbol{x}$ vektort, illetve $p$-t kapja inputként. 
+A vektort itt egy hagyományos pyhton-os listaként kezeltem.
+
+Még egy fontos paraméter, ami az egyenletben nincs explicit jelölve, az az iterációk száma.
+Mivel iterációs módszerről beszélünk, így meg kell adni egy egész értéket is, 
+hogy hány iteráció után szeretnénk visszatérni az eredménnyel. Minél tovább iterálunk,
+annál pontosabb eredményt kapunk, azonban annál több erőforrást és időt vesz igénybe a program.
+
+$\boldsymbol{x}$ kezdeti értékét eleinte egy random $n$ hosszúságú vektorra állítottam be,
+aztán a determinisztikus műkösés miatt áttértem az egyesekből álló vektorra, így 
+könnyebb volt a későbbiekben ellenőrizni a program helyességét.
+
+
+\section{Teszt adatok}
+
+A NetworkX a gráfokkal kapcsolatos függvényeken és eljárásokon kívül 
+tartalmaz néhány gráfot is, például Zachary karate klubjának a gráfját.
+Én is ezt használom a teszteléshez, illetve a program ezzel számol 
+alapértelmezett gráfként, ha nem adunk meg mást.
+
+Egyéb gráfok beszerzésére a \href{https://networkrepository.com/index.php}{Netwrok Repository}
+oldalt használtam, ahool több ezer gráf áll rendelkezésre ingyenesen. 
+Igyekeztem kisebb fokszámú $(|V|<100)$, de nem triviális gráfokat keresni.
+
+
+\section{A keretprogram}
+A szoftvert egy mérésre, kísérletezésre alkalmas eszközként képzeltem el,
+amiben a matematikai számításokon van a hangsúly, nem pedig a felhasználói felületen.
+Így a Unix filozófiához hűen egyszerű parancssori alkalmazásban gondolkoztam,
+ami ``egy dolgot csinál, de azt jól csinálja''.
+
+A program fejlesztésének első fázisában probléma volt, hogy az aktuális haladást
+mindig ki akartam próbálni, esetleg az eredményeket képeken ábrázolni, és aztán
+változtatni rajta, újra kipróbálni. Erre kézenfekvő megoldás volt, hogy 
+az alkalmazásnak a számításhoz szükséges benemeneti paramétereken kívül 
+meg lehessen adni, hogy milyen funkciót végezzen el.
+Így ha valami újfajta mérést szerettem volna leimplementálni, akkor elég volt
+létrehozni neki egy új funkciót, amit a helyes paraméterezés esetén végrehajt.
+
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
