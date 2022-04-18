@@ -3,7 +3,7 @@ import networkx as nx
 import pandas as pd
 import logging
 
-from operations import compare, comparison, find_similar_centralities, solve
+from operations import compare, comparison, find_similar_centralities, find_similar_pair, solve
 from utils import get_tensor_util_by_name
 
 logging.basicConfig(level=logging.DEBUG,
@@ -55,9 +55,7 @@ if __name__ == "__main__":
         find_similar_centralities(
             graph, args.tensor, args.alpha, args.p, args.num_iter,  2, args.treshold)
     elif args.operation == "find-similar-pair":
-        for i in range(len(args.tensor) - 1):
-            logging.debug(f"pair: {args.tensor[i]} {args.tensor[i+1]}")
-            graph = find_similar_centralities(
-                graph, args.tensor[i:i+2], args.alpha, args.p, args.num_iter,  2, args.treshold)
+        find_similar_pair(graph, args.tensor, args.alpha,
+                          args.p, args.num_iter, args.treshold)
     else:
         raise argparse.ArgumentError(f"Invalid operation: {args.operation}")

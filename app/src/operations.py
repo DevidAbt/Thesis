@@ -6,9 +6,10 @@ from database import Database
 import random
 import networkx as nx
 from networkx.classes.graph import Graph
+import matplotlib.pyplot as plt
 
 from logic import compare_centralities, solve_eigenvalue_problem
-from visualization import draw_iteration_result
+from visualization import create_gif, draw_histograms, draw_iteration_result, draw_scatterplot
 
 
 def solve(graph: Graph, tensor_fn_name, alpha, p, num_iter):
@@ -46,6 +47,7 @@ def find_similar_centralities(graph: Graph, tensor_fns, alpha, p, num_iter, mode
 
     last_modifications = []
     while True:
+        iteration += 1
         # calculating centrality correlations
         table = compare_centralities(
             graph, tensor_fns, alpha, p, num_iter)
@@ -101,8 +103,8 @@ def find_similar_centralities(graph: Graph, tensor_fns, alpha, p, num_iter, mode
             last_modifications.append(LastModification(a, b, False))
 
             while True:
-                c = random.randint(0, n-1)
-                d = random.randint(0, n-1)
+                c = list(graph.nodes)[random.randint(0, n-1)]
+                d = list(graph.nodes)[random.randint(0, n-1)]
                 if c != d and ((c != a and d != b) or (c != b and d != a)) and not graph.has_edge(c, d):
                     new_graph.add_edge(c, d)
                     last_modifications.append(LastModification(c, d, True))
@@ -111,4 +113,14 @@ def find_similar_centralities(graph: Graph, tensor_fns, alpha, p, num_iter, mode
         last_graph = graph
         graph = new_graph
 
-        iteration += 1
+
+def find_similar_pair(graph, tensor, alpha, p, num_iter, treshold):
+    original_degrees = list(map(lambda x: x[1], graph.degree))
+    for i in range(len(tensor) - 1):
+        logging.debug(f"pair: {tensor[i]} {tensor[i+1]}")
+        graph = find_similar_centralities(
+            graph, tensor[i:i+2], alpha, p, num_iter,  2, treshold)
+    result_degrees = list(map(lambda x: x[1], graph.degree))
+    create_gif()
+    draw_scatterplot(original_degrees, result_degrees)
+    draw_histograms(original_degrees, result_degrees)

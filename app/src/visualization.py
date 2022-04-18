@@ -3,7 +3,10 @@ from networkx.classes.graph import Graph
 from itertools import count
 import networkx as nx
 import matplotlib.pyplot as plt
+from matplotlib.ticker import MaxNLocator
 import os
+import numpy as np
+import subprocess
 
 from classes import LastModification
 
@@ -89,3 +92,36 @@ def draw_iteration_result(graph: Graph, iteration: str, value, last_modification
                      node_color=node_color_list)
     plt.savefig(f"{path}/{'__'.join(tensor_fn_names)}__{iteration}.png")
     plt.clf()
+
+
+def create_gif():
+    subprocess.run(
+        f"cd {path} && convert -delay 50 -loop 0 `ls -v *.png` progress.gif", shell=True)
+
+
+def draw_scatterplot(degrees_x, degrees_y):
+    fig, ax = plt.subplots()
+    ax.scatter(degrees_x, degrees_y)
+    ax.plot([0, 1], [0, 1], transform=ax.transAxes)
+
+    lims = [
+        np.min([ax.get_xlim(), ax.get_ylim()]),  # min of both axes
+        np.max([ax.get_xlim(), ax.get_ylim()]),  # max of both axes
+    ]
+
+    ax.plot(lims, lims, 'k-', alpha=0.75, zorder=0)
+    ax.set_aspect('equal')
+    ax.set_xlim(lims)
+    ax.set_ylim(lims)
+
+    fig.gca().xaxis.set_major_locator(MaxNLocator(integer=True))
+
+    fig.savefig(f"{path}/scatterplot.png")
+
+
+def draw_histograms(degrees_1, degrees_2):
+    max_degree = max(max(degrees_1), max(degrees_2))
+    fig, (ax1, ax2) = plt.subplots(2)
+    ax1.hist(degrees_1, range(1, max_degree))
+    ax2.hist(degrees_2, range(1, max_degree))
+    fig.savefig(f"{path}/histograms.png")

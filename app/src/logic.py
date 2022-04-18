@@ -29,7 +29,7 @@ def solve_eigenvalue_problem(graph: Graph, get_tensor_fn: Callable[[Graph], np.n
     return b_k
 
 
-def compare_centralities(graph: Graph, tensor_fn_names: list[str], alpha: float, p: float, num_iterations: int, include_degree_centrality: bool = True):
+def compare_centralities(graph: Graph, tensor_fn_names: list[str], alpha: float, p: float, num_iterations: int):
     results = []
 
     for tensor_fn_name in tensor_fn_names:
