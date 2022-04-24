@@ -49,6 +49,8 @@
 
 \usepackage{amssymb} 
 
+\usepackage{verbatim}
+
 % Egyéni színek
 \definecolor{codegreen}{rgb}{0,0.6,0}
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
@@ -583,20 +585,102 @@ tartalmazza a vizsgálandó másodrendű kapcsolatokat.
 
 \subsection*{Bináris háromszögtenzor}
 
-TODO
+A másodrendű kapcsolatoknak egyik legjobb példája, ha az adott három csúcs egy
+háromszöget zár be, azaz páronként össze vannak kötve egy-egy éllel.
+Ennek az elkódolásához egy olyan tenzorra van szükségünk, amelynek az első 
+dimenziója szerinti $i.$, második dimenzója mentén $j.$, harmadik dimenziója
+mentén $k.$ elem akkor $1$, ha a gráfnak az $i., j., k.,$ csúcsa egy háromszöget
+alkot, különben $0$:
 
-\subsection*{``Random séta'' háromszögtenzor}
+\begin{equation}
+	(\boldsymbol{T}_B)_{ijk} = 
+		\begin{cases}
+			1 & \text{ha} ~ i, j, k ~ \text{csúcsok között páronként szerepel él} \\
+			0 & \text{különben}
+		\end{cases}
+\end{equation}
 
-TODO
+\pagebreak
+
+\subsection*{Random séta háromszögtenzor}
+
+A random séta háromszögtenzor egy normalizált változata a bináris 
+háromszögtenzorznak, azzal a trükkel, hogy ha $i, j, k$ egy háromszöget alkot,
+akkor nem $1$ lesz a tenzor adott értékének az eleme, hanem a $(j,k)$ élet
+tartalmazó háromszögek számának a reciproka.
+Egy adott $(j,k)$ élet tartalmazó gráfbeli csúcsháromszögek számát könnyen ki 
+lehet számolni a szomszédsági mátrix alapján:
+
+$$\Delta(j,k) = (A \circ A^2)_{jk}$$
+
+\noindent
+ahol a $\circ$ művelet a mátrixok elenkénti szorzását jelöli.
+
+A kapott tenzor ezek alapján:
+
+\begin{equation}
+	(\boldsymbol{T}_W)_{ijk} = 
+		\begin{cases}
+			\frac{1}{\Delta(j,k)} & \text{ha} ~ i, j, k ~ \text{csúcsok között páronként szerepel él} \\
+			0 & \text{különben}
+		\end{cases}
+\end{equation}
+
+Fontos megemlíteni, hogy $\boldsymbol{T}_W$ jól definiált, hiszen ha 
+$i, j, k$ csúcsok háromszöget alkotnak, akkor $\Delta(j,k)$ legalább $1$.
+
 
 \subsection*{Klaszterező-együttható háromszögtenzor}
 
-TODO
+Egy másik megközelítés lehet, ha a csúcshármasoktól nem várjuk el, hogy 
+alkossanak háromszöget, hanem csak annyi, hogy egy "szeletben" vegyenek részt,
+azaz legalább kettő élhez kapcsolódjanak.
+Tehát az $i$ csúcsot érintő háromszögek számának reciproka helyett az $i$ 
+csúcsból kiinduló irányítatlan szeletek számának reciprokát vesszük alapul.
 
-\subsection*{Local closure triangle tensor (?)}
+Ha $d_i$ az $i.$ csúcs fokszámát jelöli, akkor $d_i(d_i-1)$ szorzat pont a 
+keresett értéket adja meg. Ezek alapján a tenzor:
 
-TODO
+\begin{equation}
+	(\boldsymbol{T}_C)_{ijk} = 
+		\begin{cases}
+			\frac{1}{d_i(d_i-1)} & \text{ha} ~ i, j, k ~ \text{csúcsok között páronként szerepel él} \\
+			0 & \text{különben}
+		\end{cases}
+\end{equation}
 
+Ezesetben is $\boldsymbol{T}_C$ jól definiált, mivel ha 
+$i, j, k$ csúcsok háromszöget alkotnak, akkor $d_i(d_i-1)$ legalább $2$.
+
+\pagebreak
+
+\subsection*{Local closure háromszögtenzor}
+
+Az utolsó tenzor, amit vizstgálni fogunk ismét egy másik megközelítése a 
+másodrendű kapcsolatoknak.
+Most az adott csúcsból kiinduló kettő hosszúságú utakat vesszük figyelembe a
+számításnál a háromszögek illetve a szeletek keresése helyett.
+Ezt megkaphatjuk úgy, hogy összeadjuk az adott csúccsal szomszédos csúcsok 
+fokszámát, és kivonjuk belőle az adott csúcs fokszámát.
+Vagy pedig összeadjuk az adott csúccsal szomszédos csúcsok fokszámánál egyel
+kisebb értékeket:
+
+$$w(i) = \sum_{j \in N(i)} d_j - d_i = \sum_{j \in N(i)} (d_j - 1)$$
+
+ahol $N(i)$ az $i$-vel szomszédos mezők halmazát jelöli.
+
+Ebben az esetben a tenzor a következő:
+
+\begin{equation}
+	(\boldsymbol{T}_L)_{ijk} = 
+		\begin{cases}
+			\frac{1}{w(i)} & \text{ha} ~ i, j, k ~ \text{csúcsok között páronként szerepel él} \\
+			0 & \text{különben}
+		\end{cases}
+\end{equation}
+
+Amely szintén jól definiált, hiszen ha $i, j, k$ háromszöget alkot, akkor 
+biztosan létezik nullánál több kettő hosszúságú $i$-ből kiinduló út a gráfban.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Implementáció                                                              %%
@@ -701,7 +785,166 @@ meg lehessen adni, hogy milyen funkciót végezzen el.
 Így ha valami újfajta mérést szerettem volna leimplementálni, akkor elég volt
 létrehozni neki egy új funkciót, amit a helyes paraméterezés esetén végrehajt.
 
+\section{Parancssori argumentumok}
 
+A program futtatásához kell egy funkciót megadni parancssori paraméter formájában, 
+amivel meghatározzuk, hogy milyen számítást hajtson végre a program. 
+Ez az egyetlen kötelező paraméter.
+
+\noindent
+Például:
+
+\texttt{python main.py solve}
+
+\noindent
+ahol a \texttt{solve} funkciót szeretnénk elvégeztetni a programmal.
+
+Ezen kívül lehetőségünk van a következő paraméterek állítására is:
+
+\begin{itemize}
+	\item \texttt{--graph}, röviden \texttt{-g}, a gráf megadására, 
+		amin számolni szeretnénk
+	\item \texttt{--tensor}, röviden \texttt{-t}, a tenzor(ok) megadására, 
+		amivel a másodrendű kapcsolatokat jellemezzük. 
+		(Egyes funkciókhoz több tenzort is meg lehet adni.)
+	\item \texttt{--alpha}, röviden \texttt{-a}, az egyenlet $\alpha$ paramétere
+	\item \texttt{-p} a gráf megadására, az egyenlet $p$ paramétere
+	\item \texttt{--num\_iter}, röviden \texttt{-n}, a hatványmódszerben az 
+		elvégezendő iterációk szám
+	\item \texttt{--treshold}, röviden \texttt{-x}, a \texttt{find-similar} 
+		funkciókban az optimális hasonlóság mértéke
+\end{itemize}
+
+\noindent
+Ezeket a paramétereket, és a hozzájuk tartozó rövid magyarázatot a
+
+\texttt{python main.py --help}
+
+\noindent
+utasítással le tudjuk kérdezni.
+Példa egy paraméterezésre:
+
+\texttt{python src/main.py --graph input\_graphs/soc-firm-hi-tech.txt --tensor random\_walk --alpha 0.6 -p 2 --num\_iter 15 solve}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Funkciók                                                                  %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Funkciók}
+
+
+\section{Solve}
+
+Az első funkció, amit a program nagyon korai fázisában implementálva lett, 
+az a \texttt{solve}, ami gyakorlatilag kiszámítja az általános sajátvektor 
+modell egyenletét az kapott paraméterek alapján, hatványmódszer segítségével.
+Az eredményvektort a képernyőre írja ki. Az előző oldalon szereplő példa esetén
+az output a következő:
+
+\vspace{0.4cm}
+
+\footnotesize
+\noindent
+% \texttt{
+\begin{verbatim}
+[0.00840449 0.12371296 0.00840449 0.22103893 0.51571457 0.10745514
+	0.06594145 0.38736454 0.20666928 0.25458575 0.11321281 0.26577601
+	0.11070488 0.2408121  0.31856498 0.0964164  0.11184042 0.14277145
+	0.10582157 0.0454091  0.08996091 0.04470695 0.17091334 0.18363112
+	0.05318976 0.07146028 0.03518014 0.05129317 0.003085   0.02035976
+	0.01828195 0.00239007 0.00617164]
+\end{verbatim}
+% }
+\normalfont
+
+\section{Compare}
+
+A centralitások vizsgálatának az egyik legkézenfekvőbb formája az 
+összehasonlítás. Minden centralitás a gráf valamely jellemzője alapján
+felállít egy sorrendet a csúcsok között a hozzájuk rendelt értékekkel.
+Ezeknek a sorrendeknek összehasonlításához a Kendall rangkorrelációs 
+együtthatót (röviden: Kendall tau) vesszük igénybe, ami egy 
+$x \in \mathbb{R}: 0 \leq x \leq 1$
+értékkel jellemzi a centralitások eredményeként kapott vektorok hasonlóságát
+a sorrendiség szempontjából.
+
+A Kendall tau kiszamításához az \texttt{scipy} csomag \texttt{stats} 
+alkönyvtárának a \texttt{kendalltau} függvényét használjuk fel, ami a két 
+összehasonlítandó vektort várja paraméterként, és a Kendall rangkorrelációs 
+együtthatóval, valamint a p-értékkel tér vissza.
+
+A program képes egyszerre akár kettőnél több tenzorhoz tartozó centrailtás 
+összehasonlítására is a \texttt{compare} funkcióval. Az erdmény egy táblázat, aminek első sorában és 
+oszlopában szerepelnek az összehasonlított centralitásokhoz tartozó tenzorok 
+nevei, az egyes mezőkben pedig az adott sorhoz és oszlophoz tartozó centralitás
+korrelációja: a főátló felett a Kendall korrelációs rangegyütthatók, a főátló
+alatt a p-értékek.
+
+\noindent
+Példa a funkció használatára:
+
+\texttt{python src/main.py compare -t binary -t random\_walk -t clustering\_coefficient -t local\_closure}
+
+\pagebreak
+
+\noindent
+Ehhez a bemenethez tartozó eredmény:
+
+\scriptsize
+\begin{verbatim}
+p_value \ tau              binary  random_walk  clustering_coefficient  local_closure
+binary                 1.00000000   0.64349376              0.66131907     0.64349376
+random_walk            0.00000009   1.00000000              0.98217469     1.00000000
+clustering_coefficient 0.00000004   0.00000000              1.00000000     0.98217469
+local_closure          0.00000009   0.00000000              0.00000000     1.00000000
+\end{verbatim}
+\normalsize
+
+\section{Comparison}
+
+Gyakran ha összehasonlítást szeretnénk elvégezni, nem csak egy adott 
+paraméterezéses mérésnek az eredményére vagynk kíváncsi, mint amit az előző
+funkció produkál, hanem például több $\alpha$ érték esetén lennénk kíváncsiak
+a hasonlóságokra. Erre szolgál a \texttt{comparison} funkció, ami szintén 
+a megadott tenzorokhoz tartozó centralitásokat hasonlítja össze, azonban itt 
+nem az általunk megadott $\alpha$-ra, hanem $0$-tól, $1$-ig $0.1$-es lépéssel
+minden $\alpha$-ra elvégzi az összehasonlítást.
+
+Ez esetben nem lenne célszerű az eredményt a standart outputon megjeleníteni,
+így ehelyett inkább egy adatbázisba kerülnek a kapott korrelációs együtthatók.
+A célnak tökéletesen megfelel az sqlite adatbázis, hiszen relatíve kevés 
+adatot szeretnénk letárolni, és így nem kell semmiféle harmadik féltől 
+származó szoftvert telepíteni az adatbázisba íráshoz.
+
+A program a $comparison$ funkció futtatása esetén létrehoz egy táblát az 
+adatbázisban - ha az még nem lézetik - és letárolja a gráf nevét, az aktuális 
+$\alpha$ értéket, $p$ paramétert, illetve a centralitáspárok tartozó korrelációs
+értékeket.
+
+\vspace{0.3cm}
+
+\noindent
+Például:
+
+\texttt{python src/main.py comparison -p 2 -t degree -t binary -t random\_walk -t clustering\_coefficient -t local\_closure}
+
+\noindent
+paraméterezés esetén az adtbázisba a következő adatok kerültek:
+
+\vspace{0.3cm}
+
+\noindent
+\includegraphics[width=\linewidth]{images/comparison_result.png}
+
+\noindent
+A kép részlet, \texttt{sqlitebrowser} alkalmazásban készült.
+A korrelációs értékeket tároló mezőket a $tenzor1\_tenzor2$ konvenció alapján 
+neveztem el, és a Kendall tau értékét tartalmazzák.
+
+\pagebreak
+
+\section{Find-similar}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
