@@ -113,6 +113,10 @@ def draw_scatterplot(degrees_x, degrees_y):
     ax.set_aspect('equal')
     ax.set_xlim(lims)
     ax.set_ylim(lims)
+    ax.set_xlabel("original")
+    ax.set_ylabel("result")
+
+    fig.suptitle("degree distribution")
 
     fig.gca().xaxis.set_major_locator(MaxNLocator(integer=True))
 
@@ -124,4 +128,8 @@ def draw_histograms(degrees_1, degrees_2):
     fig, (ax1, ax2) = plt.subplots(2)
     ax1.hist(degrees_1, range(1, max_degree))
     ax2.hist(degrees_2, range(1, max_degree))
+    ax1.set_title("original")
+    ax2.set_title("result")
+    fig.suptitle("degree distribution")
+    fig.tight_layout()
     fig.savefig(f"{path}/histograms.png")

@@ -927,7 +927,8 @@ $\alpha$ értéket, $p$ paramétert, illetve a centralitáspárok tartozó korre
 \noindent
 Például:
 
-\texttt{python src/main.py comparison -p 2 -t degree -t binary -t random\_walk -t clustering\_coefficient -t local\_closure}
+\texttt{python src/main.py comparison -p 2 -t degree -t binary -t random\_walk 
+-t clustering\_coefficient -t local\_closure}
 
 \noindent
 paraméterezés esetén az adtbázisba a következő adatok kerültek:
@@ -945,6 +946,157 @@ neveztem el, és a Kendall tau értékét tartalmazzák.
 \pagebreak
 
 \section{Find-similar}
+
+\subsection{Keresési probléma}
+
+A program eddigi funkicói arra nyújtottak eszközt, hogy meglévő gráfokon 
+végezhessünk méréseket, összehasonlításokat. Azonban gyakran előfordul, hogy
+olyanra esetekre vagyunk kíváncsiak, amit még nem láttunk konkrét gráfok esetén.
+Tehát nem a centralitás, illetve a centralitások hasonlósága a kérdés, hanem
+hogy az általunk kívánt korrelációk milyen gráfok esetén állnak fent.
+
+A \texttt{find-similar} funkciócsalád olyan gráfok keresésére szolgál, ahol
+a megadott sajátérték centralitások majdnem megegyeznek. Természetesen a 
+triviális gráfokon kívül érdekes ez a kérdés, hiszen például egy teljes gráf
+esetén a csúcsoknak nincs kitüntetett szerepük, minden centralitás ugyan azt 
+az értéket rendelné a pontokhoz.
+
+\subsection{Kiindulás}
+Ahhoz, hogy egy ilyen keresésbe belekezdjünk, szükséges egy kiindulási gráf.
+A program eddigi adottságait kihasználva ez szükségszerűen lehet egy parancssori
+argumentumként kapott gráf, hiszen több, tetszőleges kezdőállapotból elindítva a 
+keresést nagyobb valószínűséggel találunk az elvárásainknak megfelelő, vagy 
+legalábbis ahhoz hasonlító gráfot.
+
+\subsection{Algoritmus}
+Az alap ötlet az, hogy kiszámítjuk a kezdeti gráfon a sajátérték centralitások
+korrelációját, majd változtatunk valamit a gráfon, például egy élet elhagyunk,
+vagy egy újat hozzáadunk és megint kiszámítjuk a centralitásokat, és a 
+korrelációs együtthatót. Ha az érték jobb (nagyobb) mint az előző, akkor 
+az új gráffal megyünk tovább, ha nem, elvetjük a változtatásokat, és újra 
+próbálkozunk. 
+Ez egy hegymászó algoritmus, azaz kiszámítjuk az adott helyben lévő értéket,
+lépünk egyet, kiszámítjuk az új értéket. Ha jobb, megtartjuk. Ha rosszabb,
+visszalépünk. Ennek az egyik előnye az, hogy nincs akkora számítás- és időigénye
+mintha az összes lehetséges élkombináción végig próbálnánk menni, ami nagyobb 
+gráfok esetén szinte kivitelezhetetlen lenne.
+
+\pagebreak
+
+\subsection{Első megvalósítás}
+Az algoritmus implementálása során egy hagyományos ciklusos maximuxkeresős 
+megoldás volt a legcélszerűbb, ahol nem egy adott strukrúra értékein
+végigiterálva történt a keresés, hanem minden iterációban kiszámolásra került
+az aktuális gráf centralitásainak korrelációja. Kezdetben ez az előző 
+funkciókban már elkészített függvényeket használta. Kettőnél több centralitás
+összehasonlítása esetén a korrelációk összegének a maximumát kereste az 
+algoritmus.
+
+Minden iterációban 50\% eséllyel kitörölt egy élet a gráfból, 50\% eséllyel 
+pedig létrehozott egyett két még nem összkötött csúcs között. Az algoritmus 
+természetesen figyelembe vette az aktuális élek számát, tehát például teljes 
+gráf esetén biztosan elvesz élet, nem fut hibára.
+
+\subsection{A részeredménynek ábrázolása}
+Az algoritmus futása közben kapott gráfokat, illetve a hozzájuk tartozó értéket
+nem lenne sem informatív, sem látványos a standard outputon mátrix formában 
+megjeleníteni, így arra a következtetésre jutottam, hogy NetworkX és a 
+Matplotlib beépített függvényeit kihasználva az egyes gráfokat kirajzoltatom.
+A gráfon végbement változtatások kiemelése érdekében a hozzáadott, illetve
+elvett csúcsokat a végpontjaikkal együtt zöldre, illetve pirosra színezi
+a program, hogy emberi szemmel is könnyen látható legyen, hogy mi változott.
+
+Példa:
+
+\includegraphics[width=0.9\linewidth]{./images/find_similar_partial_result.png}
+
+Ezen a képen a Bináris háromszögtenzorhoz, illetve a Local closure 
+háromszögtenzorhoz tartozó centralitások korrelációja a célfüggvény,
+a 8. iterációnál (hegymászó lépésnél) tart az algoritmus, és jelenleg 
+~0.7967... a korrelációs együttható értéke.
+
+\subsection{Javítások}
+
+Az első megvalósításban gyakran előfordult, hogy a program egy olyan irányba
+vitte a kiinsulási gráfot, hogy annak az éleinek a száma nagymértékben elkezdett
+növekedni, vagy épp ellenkezőleg, gyorsan elkezdett csökkenni. 
+Az ilyen lefutások gyakran egy kevésbé természetes, jóval inkább triviális 
+gráfhoz vezettek, ami nem túl ideális eset számunkra.
+
+E probléma kiküszöbölésére az a megoldás született, hogy az algoritmus 
+élszámtartó legyen, azaz mindig pontosan egy élet vegyen el a gráfból 
+(továbbra is figyelembe véve azt, hogy a gráf összefüggő maradjon), illetve egy 
+még nem létező élet adjon hozzá. Ez a megközelítés egy teljesen új gráf alkotása
+helyett a kiindulási gráf éleit rendezi csak át az optimális megoldást keresve.
+
+A másik probléma az volt, hogy kettőnél több centralitás esetén az 
+hegymászás nem bizonyult hatékonynak. Kezdetben a program ugyanis a páronként 
+összehasonlított centralitások korrelációs együtthatóinak az összegét 
+maximalizálta. Ezzel probléma lehet, hogy valamely két centrailtás ténylegesen
+közelebb kerül egymáshoz egy részeredmény gráf esetén, de a többivel való
+hasonlóság kissé romlik, ami hátráltat az optimális értékhez való eljutásban.
+
+Erre az a megoldás kínálkozott, hogy az egyes centralitások hasonlóságát 
+páronként vizsgáljuk, és páronként történik a hegymászás. Ha a korrelációs
+együttható eléri az elvárt értéket egy centrailtás pár esetén egy gráfnál,
+akkor a következő párral folytatjuk az algoritmust.
+
+Utóbbi megoldással érezhetően megnövekedett az algoritmus sebessége, olyan 
+értelemben, hogy hamarabb eljutottunk az elvárt korreláció együttható értékig.
+
+\pagebreak
+
+\subsection{Eredmények}
+
+Az funckió futtatásának eredményei a Karate klub gráf esetén:
+
+\noindent
+Kiindulási gráf:
+
+\includegraphics[width=0.85\linewidth]{images/find_similar_start.png}
+
+\noindent
+Utolsó iteráció eredménye:
+
+\includegraphics[width=0.85\linewidth]{images/find_similar_end.png}
+
+A program a png képeken kívül az iterációkból készítet gif-et is.
+
+\pagebreak
+
+A kiindulási és az eredményül kapott gráf élszámairól készít hisztogramot is
+a szoftver:
+
+\hspace{1cm}
+
+\includegraphics[width=0.95\linewidth]{images/find_similar_histogram.png}
+
+\noindent
+valamint scatterplot-ot is:
+
+\includegraphics[width=0.95\linewidth]{images/find_similar_scatterplot.png}
+
+
+A példában használt Karate Klub gráf esetén jól látszik, hogy az eredmény 
+gráfban a kiindulásihoz képest az élszámok egyenletesebben oszlanak el, a 
+nagyobb fokszámú, illetve a nagyok kis (x<3) fokszámú csúcsok száma csökkent,
+több csúcs esett az eredmény gráfban a 3-5 fokszámú csúcsok halmazába.
+
+
+Egy másik gráf esetén, ami egy csúcstechnológiai cégen belüli kapcsolatokat 
+tartalmaz, hasonló eredményeket ért el az algoritmus, itt is egyenletesebb lett 
+a csúcsok fokszámainak az eloszlása az eredmény gráf esetén, ahol 97\%-ban 
+korrelálnak a sajátvektor centralitások:
+
+\hspace{1cm}
+
+\includegraphics[width=0.8\linewidth]{images/find_similar_histogram2.png}
+
+\hspace{0.5cm}
+
+\includegraphics[width=0.8\linewidth]{images/find_similar_scatterplot2.png}
+
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

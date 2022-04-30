@@ -34,7 +34,7 @@ def comparison(graph, tensor_fn_names, alpha, p, num_iter):
     for i in range(11):
         table = compare_centralities(
             graph, tensor_fn_names, i*0.1, p, num_iter)
-        db.insert_comparison("karate", i*0.1, p, table[0][1], table[0][2], table[0][3],
+        db.insert_comparison(graph.name, i*0.1, p, table[0][1], table[0][2], table[0][3],
                              table[0][4], table[1][2], table[1][3], table[1][4], table[2][3], table[2][4], table[3][4])
     db.conn.commit()
 
