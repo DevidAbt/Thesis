@@ -203,19 +203,7 @@
 \fancyfoot[R]{\thepage}
 \addcontentsline{toc}{section}{Feladatkiírás}
 
-Elterjedt hobbi az operációs rendszer, illetve kernel fejlesztése az olyan
-programozók közt, akik szeretnének többet megtudni a számítógépek működéséről.
-Ennek köszönhetően az interneten számos nyílt forráskódú hobbi operációs
-rendszerrel, valamint az azok írásához felhasználható útmutatókkal
-találkozhatunk. Sajnálatos módon ezen leírások nagy része elavult, túl
-bonyolult, vagy nem elég részletes ahhoz, hogy egy kezdő bármit is megértsen
-belőle, ezért elhatároztam, hogy megírok egy jól dokumentált, egyszerűen
-használható és bővíthető operációs rendszert, és kialakítok hozzá egy gyorsan
-felállítható fejlesztői környezetet, amelynek beüzemelése mindössze pár parancs.
-
-\hfill \break
-A feladat része, hogy az operációs rendszer rendelkezzen a legszükségszerűbb
-alap funkciókkal, és tartalmazzon pár programot és/vagy játékot is.
+TODO
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Tartalmi összefoglaló                                                      %%
@@ -230,36 +218,30 @@ alap funkciókkal, és tartalmazzon pár programot és/vagy játékot is.
 
 \subsubsection*{A megadott feladat megfogalmazása}
 
-A feladat egy olyan operációs rendszer megírása, amely bootolás után egy
-egyszerű parancssori, illetve grafikus felhasználói felületet biztosít, és
-emellett rendelkezik néhány programmal és játékkal is.
+TODO
 
 \subsubsection*{A megoldásmód}
 
-Az egyszerűség kedvéért az összes program a kernelbe van "égetve", és
-kernelszintű hozzáférése van, valamint néhány olyan elem megvalósításához,
-amely nem része a feladatkiírásnak, és túl sok időbe telt volna egy működő
-implementáció feltalálása, már létező nyílt forráskódú és szabad szoftverek
-részeit portoltam le, vagy azok működési elvei alapján írtam meg a saját
-implementációmat.
+TODO
 
 \subsubsection*{Alkalmazott eszközök, módszerek}
 
-A fejlesztés a \textit{VSCodium} és \textit{Vim} szövegszerkesztők segítségével
-zajlott C, C++ és 32-bites x86 assembly nyelven.
-A szoftver fordítására a \textit{gcc, g++, gas} fordítókat, hibakereséshez
-\textit{GDB}-t, virtualizációhoz pedig nagyrészt \textit{QEMU}-t, majd később az
-\textit{Oracle VirtualBox}-ot használtam. A build folyamatokat a
-\textit{GNU Make} szoftver segítségével automatizálam.
+A fejlesztés a \textit{VSCodium} szövegszerkesztő segítségével
+zajlott python nyelven, a \textit{NetworkX, NumPy, Matplotlib} és egyéb 
+matematikai függvénykönyvtárak használatával. A program számára minta adatok
+a \href{https://networkrepository.com/index.php}{Netwrok Repository} weboldalról
+lettek letöltve.
+
 
 \subsubsection*{Elért eredmények}
 
-Az operációs rendszerem sikeresen bootol virtuális gépeken, és a tesztelt
-funkciók hiba nélkül működnek.
+Egy könnyen kezelhető parancssori alkalmazás, amely tetszőleges gráf 
+másodrendű sajátvektor centralitásainak vizsgálatára, összehasonlítására, 
+valamint a feltételeknek megadott gráf keresésére alkalmas.
 
 \subsubsection*{Kulcsszavak}
 
-operációs rendszer, kernel, bootloader, GRUB, Intel, x86, QEMU, VirtualBox
+gráf, mátrix, tenzor, sajátérték, centralitás, másodrendűség, NetworkX
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Tartalomjegyzék                                                            %%
@@ -276,38 +258,44 @@ operációs rendszer, kernel, bootloader, GRUB, Intel, x86, QEMU, VirtualBox
 \addcontentsline{toc}{section}{Bevezetés}
 \pagestyle{fancy}
 
-Manapság körbevesznek minket a számítógépek, és életünk nélkülözhetetlen részévé
-váltak. Már gyerekkorom óta számítógépek közt nevelkedtem, mégis úgy éreztem,
-hogy nem tudok róluk eleget. Gimnáziumi éveim alatt olvastam egy cikket egy
-Terry Davis nevű programozóról, aki a saját operácios rendszerének
-fejlesztésére szentelte az életét. Mivel mindig is érdekelt a számítógépek
-működése, a cikk hatására elolvastam pár útmutatót arról, hogy hogyan írhanék
-otthon egy saját operációs rendszert. Az egyik ilyen útmutatót követve el is
-kezdtem a fejlesztést, azonban a nehézségek miatt hamar feladtam.
+A technológia és az internet fejlődésével nagymértékben megnőtt az emberi 
+interakciók száma a különböző online hívás- és chatszolgáltatásoknak, valamint
+közösségi médiai platformoknak köszönhetően. Sokkal több emberrel lépünk
+kapcsolatba minden nap, mint néhány évtizeddel ezelőtt.
 
-Egészen az egyetem második évéig nem rendelkeztem sem elegendő tudással,
-kitartással, sem pedig idővel egy ekkora méretű projekthez. Ekkor a nyári
-szünetben kezdtem újra a projektet, és a szakdolgozattal beadott "végleges"
-verzió befejezéséig csaknem másfél év telt el, ezalatt folyamatosan
-fejlesztettem.
+Nem csak az online emberi kapcsolatok mennyiségében történt meg ez a hirtelen
+növekedés az utóbbi harminc évben, hanem például a számítógép hálózatok esetén 
+is: ma már több mint 10 milliárd eszköz csatlakozik az internetre és kommunikál 
+egymással, ami több, mint ahány ember él jelenleg a Földön.
 
-Az operációs rendszeremet második kutyám (Rex) után RexOS-re kereszteltem. A
-fejlesztés és a tanulás során azt vettem észre, hogy a legtöbb operációs
-rendszerek, illetve kernelek fejlesztéséhez való útmutató elavult információkkal
-szolgál, vagy nehezen érthető egy kezdő számára, és sokszor a kódrészletek
-hibásak / hiányosak, vagy pedig egyáltalán nincs is kódrészlet, ami segítené
-egy-egy folyamat működésének megértését.
-Ezek a nehézségek vettek rá, hogy a projektemben ügyeljek a kód átláthatóságára
-és arra, hogy jól legyen dokumentálva, illetve hogy mindenki számára elérhető
-legyen, ezzel segítve a hobbi operációs rendszerek fejlesztőit.
+Ezeknek az interakcióknak a formalizálásához, tárolásához, illetve
+a rajtuk végzett számításokhoz újfajta modellekre illetve módszerekre volt 
+szükség. Itt gyakran nem magukon az entitásokon van a hangsúly, hanem a köztük
+létrejött kapcsolatokon. Az ilyen fajta adatok leírására talán a legalkalmasabb
+eszköz egy gráf.
 
-A 32-bites Intel architektúra mellett döntöttem, mert ehhez találtam a legtöbb
-forrásanyagot, így a fejlesztése könnyebbnek bizonyult, mint egy 64-bites
-operációs rendszeré. Eredetileg az is szerepelt a céljaim közt, hogy
-lehessen valós hardveren futtatni, azonban erről lemondtam, amikor megtudtam,
-hogy a mai számítógépek nem támogatják a VGA mode 3-at, amit az operációs
-rendszerem a tartalom megjelenítésére használ, valamint a VESA VBE-t támogató
-hardware is egyre ritkább.
+Egy gráfnak sok triviális tulajdonsága van, mint például a fokszáma, éleinek 
+száma, illetve utóbiak aránya, amivel egyszerű, de látványos kimutatásokat lehet
+készíteni. Azonban magas szintű, komplex kérdések megválaszolásához, 
+vizsgálatokhoz nem elegendő ezeket az atomi tulajdonságokat kielemezni. 
+Például egy baráti társaságban ki az összetartó kapocs? Az, aki a legtöbb embert
+közvetlenül ismeri? Az akit a legtöbben ismernek? Az aki ha kiesne a társasából,
+akkor sok olyan ember lenne, akinek nincs közös ismerőse?
+
+Sokan a mesterséges intelligencia felől, mélytanulással, neuronhálókkal 
+közelítik meg az efféle problémákat. Azonban ezek a módszerek gyakran 
+feketedobozként viselkednek, nehéz velük konkrét tulajdonságokat kinyerni egy 
+gráfból.
+
+Egy másik megközelítés a centralitások használata. Ez nem olyan elhíresült 
+kifejezés manapság, mint az AI, de komoly feladatok elvégzésében nyújtanak 
+segítséget, mint például a Google keresésekben a találatok relevanciájának 
+kiszámításában.
+A centralitás gyakorlatilag egy gráf csúcsaihoz értékeket rendel. Ennek is 
+vannak triviális változatai, mint például a fokszámcentralitás, ami minden 
+csúcshoz a fokszámát rendeli, azonban ennél sokkal összetettebb, 
+akár kettőnél több csúcs kapcsolatát magába foglaló tulajdonságok is léteznek, 
+ezeknek a vizsgálatával foglalkozunk a továbbiakban.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Alapfogalmak                                                               %%
@@ -1157,7 +1145,7 @@ megértéséhez.
 
 Alulírott \szerzo, Programtervező Informatikus hallgató, kijelentem,
 hogy a dolgozatomat a Szegedi Tudományegyetem, Informatikai Tanszékcsoport
-Szoftverfejlesztési Tanszékén készítettem, alapszakos diploma megszerzése
+Számítógépes Optimalizálás Tanszékén készítettem, alapszakos diploma megszerzése
 érdekében.
 
 \hfill \break
