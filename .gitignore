@@ -1,7 +1,6 @@
 app/src/__pycache__/
 .log
 data.db
-*.pdf
 **/build
 *.txt
 .vscode
