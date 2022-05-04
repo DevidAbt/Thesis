@@ -1093,38 +1093,25 @@ korrelálnak a sajátvektor centralitások:
 
 \chapter{Konklúzió}
 
-A QEMU-ban, illetve VirtualBox-ban végrehajtott tesztelés összességében sikerrel
-zajlott. Az alábbiakban részletezem a tesztelt funkciókat, és a kapott
-eredményt.
+Összességében tehát egy (a python csomagoktól eltekintve) függőségmentes 
+alkalmazásunk van, ami saját paraméterekkel futtatható a parancssorból, 
+így tehát még grafikus felületet sem igényel.\\
 
-\hfill \break
-Végrehajtott tesztek:
 
+\noindent
+A végleges funkicók, amik teljes körűen működőképesek:
 \begin{enumerate}
-	\item Bootolás QEMU-ban és VirtualBox-ban- sikeres
-	\item Megszakítások - működnek
-	\item PCI - kilistázza az összes PCI sínnel csatlakoztatott perifériát
-	\item Fájlrendszer - felismeri a FAT32-es elsődleges partíciókat, és
-	működik a fájlok tartalmának olvasása is
-	\item Hálózat (VirtualBox) - működik a kommunikáció a számítógépen nyitott
-	netcat-tel, illetve Android eszközön futtatott Debianon lévő netcat-tel is
-	\item Soros port (QEMU) - bootoláskor kiírja a boot logot a standard
-	outputra, illetve standard inputra bevitt karakterek megjelennek RexOS-en
-	\item Párhuzamos port (QEMU) - kiírja a kívánt szöveget
-	\item Játékok - hiba nélkül működnek
+	\item \texttt{solve}, az általános sajátvektor modell egyenletének megoldása
+	\item \texttt{compare}, másodrendű sajátérték centralitások összehasonlítása egy gráfban
+	\item \texttt{comparison}, a \texttt{compare} eredménye több $\alpha$ esetén
+	\item \texttt{find-similar}, olyan gráf keresése hegymászó algoritmussal, ahol hasonlóak a másodrendű sajátvektor centralitások eredményei
+	\item \texttt{find-similar-pair}, a \texttt{find-similar} funkció, de az algoritmus páronként hasonlítja össze a centralitásokat
 \end{enumerate}
 
-\noindent Nem lett letesztelve:
-
-\begin{enumerate}
-	\item Hálózat (QEMU)
-	\item Soros, illetve párhuzamos port (VirtualBox)
-	\item Valós hardveren bootolás
-\end{enumerate}
-
-\noindent Az operációs rendszerem fejlesztése során rengeteg új információt,
-tudást sajátítottam el, és sikerült közelebb kerülnöm a számítógépek működésének
-megértéséhez.
+Tehát az alkalmazás megfelel az elvárásoknak, képes másodrendű sajátvektor 
+centrailtások kiszámítására, összehasonlítására, és ezen felül egy hegymászó
+algoritmust is tud futtatni tetszőleges gráfra, amely adott tulajdonságú gráfot
+keres.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Irodalomjegyzék                                                            %%
@@ -1173,14 +1160,21 @@ Szeged, \today
 \chapter*{Köszönetnyilvánítás}
 \addcontentsline{toc}{section}{Köszönetnyilvánítás}
 
-Szeretném megköszönni a hasznos ismertetőket és kódrészleteket az
-\textbf{OSDev wiki szerkesztőinek}, illetve az \textbf{OSDev Discord
-szerver tagjainak} útbaigazításait, \textbf{James Molloynak} a kiváló
-leírásokkal teli weboldalát, az érthető és szórakoztató
-\textit{Write your own Operating System} c. videósorozatot pedig
-\textbf{Viktor Engelmannak}. Ez a YouTube videósorozat rengeteget segített nekem
-a fejlődésben és az operációs rendszerek működésének megértésében. Egyúttal
-szeretném megköszönni a segítségét minden ismerősömnek, aki részt vett az
-operációs rendszerem tesztelésben.
+Szeretném megköszönni a \textbf{MIT OpenCourseWare} YouTube csatorna 
+megalkotóinak és \textbf{Gilbert Strang} professzornak, hogy közzétették a általa 
+oktatott MIT Linear Algebra előadássorozatot, amely annó felkeltette 
+az érdeklődésemet ezen a szakterületen, valamint a mátrixokkal és tenzorokkal 
+kapcsolatos alaptudást megszerezhettem innen.
+
+Köszönöm a \textbf{NetworkRepository} oldal üzemeltetőinek, és azoknak akik 
+hozzájárultak, hogy szinte bármilyen méretű és tulajdonságú gráfra találhattam
+példát, amit ingyen fel is használhattam a programom tesztelése közben.
+
+Továbbá köszönöm azoknak a \textbf{MathOverflow} és \textbf{StackOverflow}
+felhasználóknak a válaszait, akik önszánukból részletes példákon keresztül
+igyekeztek megválaszolni előttem feltett kérdéseket, ami bennem is 
+megfolgalmazódtak e szakdolgozat készítése közben.
+
+
 
 \end{document}
