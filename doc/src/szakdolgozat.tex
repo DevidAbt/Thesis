@@ -51,6 +51,10 @@
 
 \usepackage{verbatim}
 
+\usepackage{scalerel}
+
+\usepackage{url}
+
 % Egyéni színek
 \definecolor{codegreen}{rgb}{0,0.6,0}
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
@@ -203,7 +207,24 @@
 \fancyfoot[R]{\thepage}
 \addcontentsline{toc}{section}{Feladatkiírás}
 
-TODO
+Hálózatok központisági értéke egy olyan függvény, amely a gráf
+csúcsaihoz rendel egy vagy több valós számot.
+
+Több száz ilyen központisági értéket definiáltak már. Ezek általános
+jellemzője, hogy lényegében csúcspárok közötti összefüggéseken
+alapszanak, így ezek tekinthetőek elsőrendű centralitásoknak.
+A triviális fokszám központiság után talán az egyik legklasszikusabb
+fogalom a sajátvektor központiság.
+
+A szakirodalomban nemrégiben több olyan cikk is megjelent, amelyekben
+magasabb rendű központisági fogalmakat definiáltak. \cite{second-order-framework}
+Egy lehetséges ilyen kivitelezés az, amelyben a szomszédsági mátrix
+helyett tenzorokat használunk.
+
+A hallgató feladata, hogy felfedezze a másodrendű sajátvektor
+központiság világát. Elkészítendő egy szimulációs környezet, amelyben
+lehetőségünk van különféle tenzorok használatával többféle variánst is
+használni. Egy szemléletes demonstrációs példa elkészítése is feladat.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Tartalmi összefoglaló                                                      %%
@@ -218,11 +239,17 @@ TODO
 
 \subsubsection*{A megadott feladat megfogalmazása}
 
-TODO
+Egy szimulációs program elkészítse, amely képes másodrendű sajátvektor
+központiságok kiszámítására tetszőleges gráf és adott paraméterek esetén, 
+képes az eredmények összehasonlítására, valamint adott krtiériumnak megfelelő
+gráf keresésére.
 
 \subsubsection*{A megoldásmód}
 
-TODO
+Az általános sajátvektor modell egyenlete definiálja a sajátvektor centralitás
+problémát, amely megoldásának a közelítésére alkalmas a hatványmódszer.
+Az eredményként kapott vektorok elemeinek sorrendjének az összehasonlítására 
+a Kendall rangkorrelációs együttható kézenfekvő eszköz.
 
 \subsubsection*{Alkalmazott eszközök, módszerek}
 
@@ -241,7 +268,7 @@ valamint a feltételeknek megadott gráf keresésére alkalmas.
 
 \subsubsection*{Kulcsszavak}
 
-gráf, mátrix, tenzor, sajátérték, centralitás, másodrendűség, NetworkX
+gráf, mátrix, tenzor, sajátvektor, centralitás, másodrendűség, NetworkX
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Tartalomjegyzék                                                            %%
@@ -275,7 +302,7 @@ létrejött kapcsolatokon. Az ilyen fajta adatok leírására talán a legalkalm
 eszköz egy gráf.
 
 Egy gráfnak sok triviális tulajdonsága van, mint például a fokszáma, éleinek 
-száma, illetve utóbiak aránya, amivel egyszerű, de látványos kimutatásokat lehet
+száma, illetve utóbbiak aránya, amivel egyszerű, de látványos kimutatásokat lehet
 készíteni. Azonban magas szintű, komplex kérdések megválaszolásához, 
 vizsgálatokhoz nem elegendő ezeket az atomi tulajdonságokat kielemezni. 
 Például egy baráti társaságban ki az összetartó kapocs? Az, aki a legtöbb embert
@@ -308,7 +335,7 @@ ezeknek a vizsgálatával foglalkozunk a továbbiakban.
 \section{Gráf}
 
 Egy gráf definiálható egy $G=(V,E)$ párként, ahol V a gráf csúcsainak, E az 
-éleinek halmaza. Az E halmaz V-beli elempárokat tartalmaz. 
+éleinek halmaza. Az E halmaz V-beli elempárokat tartalmaz. \cite{graph-def}
 ($E \subseteq V \times V$)
 
 Ez a matematikai struktúra alkalmas különböző entitások közti bináris kapcsolatok 
@@ -338,8 +365,8 @@ $n$-edig csúcsa közt vezet-e él.
 \pagebreak
 
 \section{Sajátérték, sajátvektor}
-A mátrixokat felfoghatjuk egy geometriai transzformációként amit egy vektoron 
-végzünk el. Például az $\textbf{A}$ mátrix a $\vec{v}$ vektort az alábbiak 
+A mátrixokat felfoghatjuk egy geometriai transzformációként is amit egy vektoron 
+végzünk el. Például az $\textbf{A}$  mátrix a $\vec{v}$ vektort az alábbiak 
 szerint módosítja:
 
 $$
@@ -370,16 +397,23 @@ $$
 
 \vspace{1cm}
 
+Ha a kapott $\vec{w}$ vektor a kiinudlási $\vec{v}$ vektornak skalárszorosa,
+akkor $\vec{v}$ vektor az $\textbf{A}$ mátrix egy sajátvektora, a skalár szorzó
+pedig a hozzá tartozó sajátérték.
+
 A transzformáció irányát és mértékét a sajátvektor és a sajátérték jellemzi.
 Definíció szerint $A$ mátrix $v$ sajátétvektora és $\lambda$ sajátértéke 
-közt az összefüggés: $$A \lambda = v \lambda$$
+közt az összefüggés: 
+$$
+A \lambda = v \lambda, ~~~ ahol ~ \vec{v} \neq \vec{\scaleobj{.8}{0}}, \lambda \in \mathbb{C}
+$$
 
 
 \section{Centralitás}
 A gráfok atomi tulajdonságain (pl.: van-e él két csúcs között) kívül sok 
 értékes információ kinyerhető különböző metrikákkal. Például a csúcsok 
 "fontosságának" egy kimutatására szolgálnak a centralitások, amik egy sorrendet 
-képeznek a gráf pontjai közt. 
+képeznek a gráf pontjai közt. \cite{centrality-def}
 
 A legegyszerűbb centralitás a fokszám centralitás, ami az adott csúcs fokszáma 
 szerint képez sorrendet.
@@ -444,7 +478,7 @@ $\rightarrow$
 A ábrán szereplő 6 pontú gráfhoz egy 6 hosszúságú vektort rendelt, 
 melynek elemei az egyes csúcsok fokszámával egyeznek meg.
 
-A fokszám centralitás kiszamítható gráfot leíró $n \times n$ szomszédsági 
+A fokszám centralitás kiszámítható gráfot leíró $n \times n$ szomszédsági 
 mátrix valamint egy $n$ elemű, egyesekből álló vektor szorzataként:
 
 \begin{align}
@@ -521,7 +555,7 @@ Ezt fogjuk felhasználni a következőkben.
 \section{Általános sajátvektor modell}
 
 A másodrendű centralitások számításához egy operátorra lesz szükség, 
-amely végrehajtra a megfelelő leképezést.
+amely végrehajtja a megfelelő leképezést.
 
 Egy \boldmath{$T$}\unboldmath $\in \mathbb{R}^{n \times n \times n}$ 
 tenzorhoz és egy $p$ valós paraméterhez definiálunk egy \boldmath{$T_p$}
@@ -557,7 +591,7 @@ Ekkor az első- és a másodrendű centralitás $i$-edik csúcsbeli értéke $x_
 $$\mathcal{M}(\boldsymbol{x}) = \lambda \boldsymbol{x}$$
 
 \noindent
-$\alpha$ megfelelő megválasztásával kiszámíhatjuk csak az elsőrendű 
+$\alpha$ megfelelő megválasztásával kiszámíthatjuk csak az elsőrendű 
 centrailtás értéket $(\alpha = 1)$, vagy csak a másodrendű centralitás 
 értéket $(\alpha = 0)$, illetve a kettő súlyozott kombinációját is.
 
@@ -602,7 +636,7 @@ lehet számolni a szomszédsági mátrix alapján:
 $$\Delta(j,k) = (A \circ A^2)_{jk}$$
 
 \noindent
-ahol a $\circ$ művelet a mátrixok elenkénti szorzását jelöli.
+ahol a $\circ$ művelet a mátrixok elemenkénti szorzását jelöli.
 
 A kapott tenzor ezek alapján:
 
@@ -644,7 +678,7 @@ $i, j, k$ csúcsok háromszöget alkotnak, akkor $d_i(d_i-1)$ legalább $2$.
 
 \subsection*{Local closure háromszögtenzor}
 
-Az utolsó tenzor, amit vizstgálni fogunk ismét egy másik megközelítése a 
+Az utolsó tenzor, amit vizsgálni fogunk ismét egy másik megközelítése a 
 másodrendű kapcsolatoknak.
 Most az adott csúcsból kiinduló kettő hosszúságú utakat vesszük figyelembe a
 számításnál a háromszögek illetve a szeletek keresése helyett.
@@ -679,12 +713,12 @@ biztosan létezik nullánál több kettő hosszúságú $i$-ből kiinduló út a
 \section{Fejlesztői környezet}
 
 A programot GNU/Linux operácios rendszer alatt VSCodium-ban fejlesztettem 
-(Visual Studio Code nyílt forráskódú és szabad változa). A python nyelvet 
+(Visual Studio Code nyílt forráskódú és szabad változa). A python nyelvet \cite{python}
 választottam, ami egy széles körben elterjedt szkriptnyelv, egyszerű 
 szintaxissal, és sokrétű matematikai függvénykönyvtárakkal rendelkezik,
 így a célnak tökéletesen megfelel.
 
-A NetworkX a használt csomagok közül a legfontosabb, a gráfok beolvasását,
+A NetworkX \cite{networkx} a használt csomagok közül a legfontosabb, a gráfok beolvasását,
 kezelését, illetve a rajtuk elvégzett műveleteket is támogatja. Ezen kívül
 említésre méltó még a NumPy és a Pandas, amiket mátrixműveletek kiszámítására
 használtam, valamint az argparse, amit parancssori argumentumok beolvasásában 
@@ -692,14 +726,14 @@ segített, illetve a Matplotlib, amivel az eredményeket kirajzoltattam.
 
 \section{A program magja}
 
-Ahhoz, hogy gráfok centralitását összehasonlítsuk, először ki kell tudni szamolni őket.
+Ahhoz, hogy gráfok centralitását összehasonlítsuk, először ki kell tudni számolni őket.
 Az első lépés ennek az implementációja volt. Bemenetként egy gráfot kapunk, és az elvárt kimenet a 
 $\mathcal{M}(\boldsymbol{x}) = \lambda \boldsymbol{x}$
 egyenlet egy közelítő megoldása. 
 
 Az egyenlet kiszámításához egy iterációs módszerre lesz szükségünk, a hatványmódszerre.
 Ez az eljárás iteratív lépések segítségével a legnagyobb abszolútértékű sajátértékhez
-és a hozzá tartozó sajátvektorhoz ad közelítő megoldást. 
+és a hozzá tartozó sajátvektorhoz ad közelítő megoldást. \cite{power-method-def}
 Az algoritmus alapja ez az iteráció:
 $$\boldsymbol{y}^{(k)} = A \boldsymbol{x}^{(k)}$$
 $$\boldsymbol{x}^{(k+1)} = \frac{\boldsymbol{y}^{(k)}}{||\boldsymbol{y}^{(k)}||}$$
@@ -728,12 +762,12 @@ a NetworkX \texttt{adjacency\_matrix} nevű függvényével.
 
 A tenzorok előállítását saját függvényekkel oldottam meg. 
 Az input itt is egy gráf (NetworkX-es \texttt{Graph} típusban eltárolva),
-és hátrom egymásba ágyazott for ciklus tölti fel a háromdimenziós tömbként tárolt tenzorokat.
-Ezeke a függvények felépítésükben nagyban hasonlítanak, egyedül a tenzor értékét adó logika tér el.
+és hátrom egymásba ágyazott for ciklus tölti fel a három dimenziós tömbként tárolt tenzorokat.
+Ezek a függvények felépítésükben nagyban hasonlítanak, egyedül a tenzor értékét adó logika tér el.
 Itt említést érdemel a NumPy csomag \texttt{ndarray, multiply, matmul} és \texttt{ones} függvényei,
-amik sok forciklus megírását spórolták meg, ezzel rövidebbé, és átláthatóbbá téve a kódot.
+amik sok for ciklus megírását spórolták meg, ezzel rövidebbé, és átláthatóbbá téve a kódot.
 
-A $\boldsymbol{T_p}$ operátornak egy háromparaméteres függvényt írtam, ami a tenzort, 
+A $\boldsymbol{T_p}$ operátornak egy három paraméteres függvényt írtam, ami a tenzort, 
 az $\boldsymbol{x}$ vektort, illetve $p$-t kapja inputként. 
 A vektort itt egy hagyományos pyhton-os listaként kezeltem.
 
@@ -750,12 +784,12 @@ könnyebb volt a későbbiekben ellenőrizni a program helyességét.
 \section{Teszt adatok}
 
 A NetworkX a gráfokkal kapcsolatos függvényeken és eljárásokon kívül 
-tartalmaz néhány gráfot is, például Zachary karate klubjának a gráfját.
+tartalmaz néhány gráfot is, például Zachary karate klubjának a gráfját \cite{karate-club}.
 Én is ezt használom a teszteléshez, illetve a program ezzel számol 
 alapértelmezett gráfként, ha nem adunk meg mást.
 
-Egyéb gráfok beszerzésére a \href{https://networkrepository.com/index.php}{Netwrok Repository}
-oldalt használtam, ahool több ezer gráf áll rendelkezésre ingyenesen. 
+Egyéb gráfok beszerzésére a Netwrok Repository \cite{network-repository}
+oldalt használtam, ahol több ezer gráf áll rendelkezésre ingyenesen. 
 Igyekeztem kisebb fokszámú $(|V|<100)$, de nem triviális gráfokat keresni.
 
 
@@ -768,7 +802,7 @@ ami ``egy dolgot csinál, de azt jól csinálja''.
 A program fejlesztésének első fázisában probléma volt, hogy az aktuális haladást
 mindig ki akartam próbálni, esetleg az eredményeket képeken ábrázolni, és aztán
 változtatni rajta, újra kipróbálni. Erre kézenfekvő megoldás volt, hogy 
-az alkalmazásnak a számításhoz szükséges benemeneti paramétereken kívül 
+az alkalmazásnak a számításhoz szükséges bemeneti paramétereken kívül 
 meg lehessen adni, hogy milyen funkciót végezzen el.
 Így ha valami újfajta mérést szerettem volna leimplementálni, akkor elég volt
 létrehozni neki egy új funkciót, amit a helyes paraméterezés esetén végrehajt.
@@ -844,7 +878,7 @@ az output a következő:
 	0.01828195 0.00239007 0.00617164]
 \end{verbatim}
 % }
-\normalfont
+\normalsize
 
 \section{Compare}
 
@@ -857,13 +891,13 @@ $x \in \mathbb{R}: 0 \leq x \leq 1$
 értékkel jellemzi a centralitások eredményeként kapott vektorok hasonlóságát
 a sorrendiség szempontjából.
 
-A Kendall tau kiszamításához az \texttt{scipy} csomag \texttt{stats} 
+A Kendall tau kiszámításához az \texttt{scipy} csomag \texttt{stats} 
 alkönyvtárának a \texttt{kendalltau} függvényét használjuk fel, ami a két 
 összehasonlítandó vektort várja paraméterként, és a Kendall rangkorrelációs 
 együtthatóval, valamint a p-értékkel tér vissza.
 
 A program képes egyszerre akár kettőnél több tenzorhoz tartozó centrailtás 
-összehasonlítására is a \texttt{compare} funkcióval. Az erdmény egy táblázat, aminek első sorában és 
+összehasonlítására is a \texttt{compare} funkcióval. Az eredmény egy táblázat, aminek első sorában és 
 oszlopában szerepelnek az összehasonlított centralitásokhoz tartozó tenzorok 
 nevei, az egyes mezőkben pedig az adott sorhoz és oszlophoz tartozó centralitás
 korrelációja: a főátló felett a Kendall korrelációs rangegyütthatók, a főátló
@@ -873,8 +907,6 @@ alatt a p-értékek.
 Példa a funkció használatára:
 
 \texttt{python src/main.py compare -t binary -t random\_walk -t clustering\_coefficient -t local\_closure}
-
-\pagebreak
 
 \noindent
 Ehhez a bemenethez tartozó eredmény:
@@ -892,7 +924,7 @@ local_closure          0.00000009   0.00000000              0.00000000     1.000
 \section{Comparison}
 
 Gyakran ha összehasonlítást szeretnénk elvégezni, nem csak egy adott 
-paraméterezéses mérésnek az eredményére vagynk kíváncsi, mint amit az előző
+paraméterezéses mérésnek az eredményére vagyunk kíváncsi, mint amit az előző
 funkció produkál, hanem például több $\alpha$ érték esetén lennénk kíváncsiak
 a hasonlóságokra. Erre szolgál a \texttt{comparison} funkció, ami szintén 
 a megadott tenzorokhoz tartozó centralitásokat hasonlítja össze, azonban itt 
@@ -906,7 +938,7 @@ adatot szeretnénk letárolni, és így nem kell semmiféle harmadik féltől
 származó szoftvert telepíteni az adatbázisba íráshoz.
 
 A program a $comparison$ funkció futtatása esetén létrehoz egy táblát az 
-adatbázisban - ha az még nem lézetik - és letárolja a gráf nevét, az aktuális 
+adatbázisban - ha az még nem létezik - és letárolja a gráf nevét, az aktuális 
 $\alpha$ értéket, $p$ paramétert, illetve a centralitáspárok tartozó korrelációs
 értékeket.
 
@@ -919,7 +951,7 @@ Például:
 -t clustering\_coefficient -t local\_closure}
 
 \noindent
-paraméterezés esetén az adtbázisba a következő adatok kerültek:
+paraméterezés esetén az adatbázisba a következő adatok kerültek:
 
 \vspace{0.3cm}
 
@@ -937,14 +969,14 @@ neveztem el, és a Kendall tau értékét tartalmazzák.
 
 \subsection{Keresési probléma}
 
-A program eddigi funkicói arra nyújtottak eszközt, hogy meglévő gráfokon 
+A program eddigi funkciói arra nyújtottak eszközt, hogy meglévő gráfokon 
 végezhessünk méréseket, összehasonlításokat. Azonban gyakran előfordul, hogy
 olyanra esetekre vagyunk kíváncsiak, amit még nem láttunk konkrét gráfok esetén.
 Tehát nem a centralitás, illetve a centralitások hasonlósága a kérdés, hanem
 hogy az általunk kívánt korrelációk milyen gráfok esetén állnak fent.
 
 A \texttt{find-similar} funkciócsalád olyan gráfok keresésére szolgál, ahol
-a megadott sajátérték centralitások majdnem megegyeznek. Természetesen a 
+a megadott sajátvektor centralitások majdnem megegyeznek. Természetesen a 
 triviális gráfokon kívül érdekes ez a kérdés, hiszen például egy teljes gráf
 esetén a csúcsoknak nincs kitüntetett szerepük, minden centralitás ugyan azt 
 az értéket rendelné a pontokhoz.
@@ -957,7 +989,7 @@ keresést nagyobb valószínűséggel találunk az elvárásainknak megfelelő, 
 legalábbis ahhoz hasonlító gráfot.
 
 \subsection{Algoritmus}
-Az alap ötlet az, hogy kiszámítjuk a kezdeti gráfon a sajátérték centralitások
+Az alap ötlet az, hogy kiszámítjuk a kezdeti gráfon a sajátvektor centralitások
 korrelációját, majd változtatunk valamit a gráfon, például egy élet elhagyunk,
 vagy egy újat hozzáadunk és megint kiszámítjuk a centralitásokat, és a 
 korrelációs együtthatót. Ha az érték jobb (nagyobb) mint az előző, akkor 
@@ -981,7 +1013,7 @@ funkciókban már elkészített függvényeket használta. Kettőnél több cent
 algoritmus.
 
 Minden iterációban 50\% eséllyel kitörölt egy élet a gráfból, 50\% eséllyel 
-pedig létrehozott egyett két még nem összkötött csúcs között. Az algoritmus 
+pedig létrehozott egyet két még nem összekötött csúcs között. Az algoritmus 
 természetesen figyelembe vette az aktuális élek számát, tehát például teljes 
 gráf esetén biztosan elvesz élet, nem fut hibára.
 
@@ -1006,7 +1038,7 @@ a 8. iterációnál (hegymászó lépésnél) tart az algoritmus, és jelenleg
 \subsection{Javítások}
 
 Az első megvalósításban gyakran előfordult, hogy a program egy olyan irányba
-vitte a kiinsulási gráfot, hogy annak az éleinek a száma nagymértékben elkezdett
+vitte a kiindulási gráfot, hogy annak az éleinek a száma nagymértékben elkezdett
 növekedni, vagy épp ellenkezőleg, gyorsan elkezdett csökkenni. 
 Az ilyen lefutások gyakran egy kevésbé természetes, jóval inkább triviális 
 gráfhoz vezettek, ami nem túl ideális eset számunkra.
@@ -1048,7 +1080,7 @@ Utolsó iteráció eredménye:
 
 \includegraphics[width=0.85\linewidth]{images/find_similar_end.png}
 
-A program a png képeken kívül az iterációkból készítet gif-et is.
+A program a png képeken kívül az iterációkból készített gif-et is.
 
 \pagebreak
 
@@ -1102,7 +1134,7 @@ alkalmazásunk van, ami saját paraméterekkel futtatható a parancssorból,
 A végleges funkicók, amik teljes körűen működőképesek:
 \begin{enumerate}
 	\item \texttt{solve}, az általános sajátvektor modell egyenletének megoldása
-	\item \texttt{compare}, másodrendű sajátérték centralitások összehasonlítása egy gráfban
+	\item \texttt{compare}, másodrendű sajátvektor centralitások összehasonlítása egy gráfban
 	\item \texttt{comparison}, a \texttt{compare} eredménye több $\alpha$ esetén
 	\item \texttt{find-similar}, olyan gráf keresése hegymászó algoritmussal, ahol hasonlóak a másodrendű sajátvektor centralitások eredményei
 	\item \texttt{find-similar-pair}, a \texttt{find-similar} funkció, de az algoritmus páronként hasonlítja össze a centralitásokat
@@ -1174,7 +1206,5 @@ Továbbá köszönöm azoknak a \textbf{MathOverflow} és \textbf{StackOverflow}
 felhasználóknak a válaszait, akik önszánukból részletes példákon keresztül
 igyekeztek megválaszolni előttem feltett kérdéseket, ami bennem is 
 megfolgalmazódtak e szakdolgozat készítése közben.
-
-
 
 \end{document}
